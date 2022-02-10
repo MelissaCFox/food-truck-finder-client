@@ -10,7 +10,7 @@ import TruckRepository from "../../repositories/TruckRepository"
 import UserRepository from "../../repositories/UserRepository"
 
 
-export const Review = ({ review, userId, setUserReviews, setTruck, alertNewRating, alertNewInfo, allReviewsList, editedReview }) => {
+export const Review = ({ review, user, alertNewInfo, userId, setTruck, alertNewRating, allReviewsList, editedReview }) => {
     const { getCurrentUser } = useSimpleAuth()
     const history = useHistory()
     const { truckId } = useParams()
@@ -42,7 +42,7 @@ export const Review = ({ review, userId, setUserReviews, setTruck, alertNewRatin
                     ? editedReview()
                     : truckId
                         ? TruckRepository.get(truckId).then(setTruck)
-                        : ReviewRepository.getAllForUser(userId).then(setUserReviews)
+                        : alertNewInfo()
             })
             .then(editToggle)
     }

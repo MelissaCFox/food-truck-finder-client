@@ -7,16 +7,15 @@ import { User } from "./User"
 
 export const Profile = () => {
     const { getCurrentUser } = useSimpleAuth()
-    const [user, setUser] = useState({})
-
+    const [currentUser, setCurrentUser] = useState({})
     useEffect(() => {
-        const user = getCurrentUser()
-        setUser(user)
+        getCurrentUser().then(setCurrentUser)
+
     }, [])
 
     return (
-        user.owner
-            ? <Owner userId={user.id} />
-            : <User userId={user.id} />
+        currentUser.owner
+            ? <Owner userId={currentUser.id} currentUser={currentUser} />
+            : <User userId={currentUser.id} currentUser={currentUser} />
     )
 }

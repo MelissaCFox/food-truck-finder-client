@@ -386,7 +386,7 @@ export const Truck = ({ truckID, setUser, userId, updateReadStateChange }) => {
                         {
                             reviews?.length > 0
                                 ? reviews?.slice(0, 3).map(review => {
-                                    return <div key={review.id} className="truck-review-card"><Review key={review.id} review={review} setTruck={setTruck} thisTruckId={truckId} alertNewRating={alertNewRating} /></div>
+                                    return <div key={review.id} className="truck-review-card"><Review key={review.id} review={review} setTruck={setTruck} alertNewRating={alertNewRating} /></div>
                                 })
                                 : truckId
                                     ? ""

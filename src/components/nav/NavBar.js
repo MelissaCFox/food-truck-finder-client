@@ -13,6 +13,10 @@ export const NavBar = () => {
         firstName: "",
         lastName: ""
     })
+    useEffect(() => {
+        getCurrentUser().then(setCurrentUser)
+
+    }, [])
     const history = useHistory()
     const refresh = true
     const welcomes = ["Welcome", "Hi", "Hey There", "Hello", "Howdy"]
@@ -22,11 +26,6 @@ export const NavBar = () => {
         setWelcome(welcomes[Math.floor(Math.random() * 5)])
     },[])
 
-    useEffect(() => {
-        getCurrentUser().then(setCurrentUser)
-        
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
 
 
     const search = () => {
