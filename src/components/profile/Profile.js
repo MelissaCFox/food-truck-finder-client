@@ -16,6 +16,6 @@ export const Profile = () => {
     return (
         currentUser.owner
             ? <Owner userId={currentUser.id} currentUser={currentUser} />
-            : <User userId={currentUser.id} currentUser={currentUser} />
+            : <User currentUser={currentUser} />
     )
 }

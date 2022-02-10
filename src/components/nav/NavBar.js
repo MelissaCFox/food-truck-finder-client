@@ -24,7 +24,7 @@ export const NavBar = () => {
 
     useEffect(() => {
         setWelcome(welcomes[Math.floor(Math.random() * 5)])
-    },[])
+    },[welcomes])
 
 
 

@@ -15,7 +15,7 @@ export const TruckCard = ({ thisTruck, truckId, newInfo }) => {
     const [truckDollarsString, setTruckDollarsString] = useState("")
     const [roundedUserRating, setRoundedUserRating] = useState(0)
     useEffect(() => {
-        const number = truck.userRating
+        const number = truck.user_rating
         const rounded = Math.round(number * 2) / 2
         setRoundedUserRating(rounded)
     }, [truck, thisTruck, truckId, newInfo])
@@ -49,8 +49,8 @@ export const TruckCard = ({ thisTruck, truckId, newInfo }) => {
     return (
         <div className="card ">
             <div className="truck-card-body ">
-                <button onClick={() => { history.push(`/trucks/${truck?.id}`) }} className={favorite ? "favorite card-body" : "regular card-body"}>
-                    <img className="truck-logo" src={truck?.profileImgSrc} alt={`${truck?.name} logo`} />
+                <button onClick={() => { history.push(`/trucks/${truck?.id}`) }} className={truck.favorite ? "favorite card-body" : "regular card-body"}>
+                    <img className="truck-logo" src={truck?.profile_img_src} alt={`${truck?.name} logo`} />
                 </button>
                 <div className="mini-info truck-rating ">
                     {

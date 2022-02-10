@@ -10,22 +10,26 @@ import TruckRepository from "../../repositories/TruckRepository"
 import UserRepository from "../../repositories/UserRepository"
 
 
-export const Review = ({ review, user, alertNewInfo, userId, setTruck, alertNewRating, allReviewsList, editedReview }) => {
+export const Review = ({ review, user, alertNewInfo, setTruck, alertNewRating, allReviewsList, editedReview }) => {
     const { getCurrentUser } = useSimpleAuth()
     const history = useHistory()
     const { truckId } = useParams()
+    
     const [modal, setModal] = useState(false)
     const reviewToggle = () => setModal(!modal)
     const [editModal, setEditModal] = useState(false)
     const editToggle = () => setEditModal(!editModal)
+    
     const [newDescription, setNewDescription] = useState("")
     const [selectedReview, setSelectedReview] = useState({})
     const [reviewer, setReviewer] = useState({})
 
 
     useEffect(() => {
-        UserRepository.get(review.userId).then(setReviewer)
-    }, [review])
+        if (user) {
+            setReviewer(user)
+        }
+    }, [user])
 
     useEffect(() => {
         ReviewRepository.getBasic(review.id).then(setSelectedReview)
@@ -58,7 +62,7 @@ export const Review = ({ review, user, alertNewInfo, userId, setTruck, alertNewR
             <div className="review-card-heading">
                 <div className="review-date">{review.date}</div>
                 {
-                    review.userId === getCurrentUser().id
+                    review.user_account.id === getCurrentUser().id
                         ? (<div className="review-options">
                             <Button color="secondary" onClick={editToggle}>Edit</Button>
 
