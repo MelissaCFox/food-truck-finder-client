@@ -9,39 +9,27 @@ import './Reviews.css';
 
 export const TruckReviewList = () => {
     const { truckId } = useParams()
-    const [truck, setTruck] = useState({})
     const [reviews, setReviews] = useState([])
     const [newInfo, setNewInfo] = useState(false)
     const editedReview = () => setNewInfo(!newInfo)
 
-    useEffect(() => {
-        TruckRepository.get(parseInt(truckId)).then(setTruck)
-    }, [truckId, newInfo])
 
     useEffect(() => {
-        ReviewRepository.getAllForTruck(truckId).then((reviews) => {
-            const recentReviews = reviews.sort((a,b) => {
-                return b.parsedDate - a.parsedDate
-            })
-            setReviews(recentReviews)
-        })
+        ReviewRepository.getAllForTruck(truckId).then(setReviews)
     }, [newInfo, truckId])
 
     return (
         <div className="truck-reviews">
-            <h2 className="heading ">{truck?.name} -- Reviews</h2>
+            <h2 className="heading ">{reviews[0]?.truck.name} -- Reviews</h2>
             <div className="truck-reviews-all">
 
                 {
-                    reviews?.length > 0
+                    reviews.length > 0
                         ? reviews.map(review => <Review key={review.id} review={review} allReviewsList={true} editedReview={editedReview} />)
                         : <div>No Reviews Yet</div>
                 }
 
             </div>
         </div>
-
     )
-
-
 }

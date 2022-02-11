@@ -57,42 +57,46 @@ export const Neighborhood = () => {
         }
     }, [todaysTrucks])
 
-    let src = ""
-    let map = ""
-    if (neighborhood.name === "12 South") {
-        src = TwelveSouth
-        map = Map12South
-    } else if (neighborhood.name === "Berry Hill") {
-        src = BerryHill
-        map = MapBerryHill
-    } else if (neighborhood.name === "Downtown") {
-        src = Downtown
-        map = MapDowntown
-    } else if (neighborhood.name === "Germantown") {
-        src = Germantown
-        map = MapGermantown
-    } else if (neighborhood.name === "Green Hills") {
-        src = GreenHills
-        map = MapGreenHills
-    } else if (neighborhood.name === "The Gulch") {
-        src = TheGulch
-        map = MapTheGulch
-    } else if (neighborhood.name === "Hillsboro Village") {
-        src = Hillsboro
-        map = MapHillsboro
-    } else if (neighborhood.name === "The Nations") {
-        src = TheNations
-        map = MapTheNations
-    } else if (neighborhood.name === "Sylvan Park") {
-        src = SylvanPark
-        map = MapSylvanPark
-    } else if (neighborhood.name === "West End") {
-        src = WestEnd
-        map = MapWestEnd
-    } else if (neighborhood.name === "5 Points") {
-        src = FivePoints
-        map = Map5Points
-    }
+    const [src, setSrc] = useState("")
+    const [map, setMap] = useState("")
+
+    useEffect(() => {
+        if (neighborhood.name === "12 South") {
+            setSrc(TwelveSouth)
+            setMap(Map12South)
+        } else if (neighborhood.name === "Berry Hill") {
+            setSrc(BerryHill)
+            setMap(MapBerryHill)
+        } else if (neighborhood.name === "Downtown") {
+            setSrc(Downtown)
+            setMap(MapDowntown)
+        } else if (neighborhood.name === "Germantown") {
+            setSrc(Germantown)
+            setMap(MapGermantown)
+        } else if (neighborhood.name === "Green Hills") {
+            setSrc(GreenHills)
+            setMap(MapGreenHills)
+        } else if (neighborhood.name === "The Gulch") {
+            setSrc(TheGulch)
+            setMap(MapTheGulch)
+        } else if (neighborhood.name === "Hillsboro Village") {
+            setSrc(Hillsboro)
+            setMap(MapHillsboro)
+        } else if (neighborhood.name === "The Nations") {
+            setSrc(TheNations)
+            setMap(MapTheNations)
+        } else if (neighborhood.name === "Sylvan Park") {
+            setSrc(SylvanPark)
+            setMap(MapSylvanPark)
+        } else if (neighborhood.name === "West End") {
+            setSrc(WestEnd)
+            setMap(MapWestEnd)
+        } else if (neighborhood.name === "5 Points") {
+            setSrc(FivePoints)
+            setMap(Map5Points)
+        }
+
+    }, [neighborhood])
 
 
     return (
@@ -100,7 +104,7 @@ export const Neighborhood = () => {
             <div className="neighborhood__details">
                 <div className="neighborhood__info neighborhood-page-card ">
                     <div className="neighborhood__id">
-                        <div className="neighborhood__image"><img alt="logo" className="neighborhood__image" src={src} /></div>
+                        <div className="neighborhood__image"><img alt={neighborhood.name} className="neighborhood__image" src={src} /></div>
                         <div className="neighborhood__description">
                             <div>{neighborhood.description}</div>
                             <div>Learn More at <a className="NG-link" target="blank" href={neighborhood.linkNG}>Nashville Guru</a></div>

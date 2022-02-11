@@ -54,70 +54,46 @@ export const Truck = ({ truckID, setUser, userId, updateReadStateChange }) => {
     const [suggestion, setSuggestion] = useState(false)
     const suggestionToggle = () => setSuggestion(!suggestion)
 
+    const [currentUser, setCurrentUser] = useState({})
+    useEffect(() => {
+        setCurrentUser(getCurrentUser())
+    }, [])
+
     const location = useLocation()
     useEffect(() => {
         window.scrollTo(0, 0)
     }, [location])
 
-    const [foodTypes, setFoodTypes] = useState([])
     useEffect(() => {
-        FoodTypeRepository.getAll().then(setFoodTypes)
+        if (truck.id) {
+            ReviewRepository.getAllForTruck(truck.id).then(setReviews)
+        }
 
-    }, [])
-
-    useEffect(() => {
-        const number = truck.userRating
-        const rounded = Math.round(number * 2) / 2
-        setRoundedUserRating(rounded)
-    }, [truck, newRating])
-
-    useEffect(() => {
-        ReviewRepository.getAllForTruck(truck.id).then((reviews) => {
-            const recentReviews = reviews.sort((a, b) => {
-                return b.parsedDate - a.parsedDate
-            })
-            setReviews(recentReviews)
-        })
     }, [truck])
 
     useEffect(() => {
-        if (truckID) {
-            TruckRepository.getBasic(truckID).then(setBasicTruck)
-        }
-    }, [truckID, roundedUserRating, newRating])
-
-    useEffect(() => {
         TruckLocationRepository.getAllDays().then(setDays)
-    }, [truckID])
+    }, [])
 
-    useEffect(() => {
-        const foundLike = favorites?.find(favorite => favorite.userId === getCurrentUser().id && favorite.truckId === truck.id)
-        if (foundLike) {
-            setExistingLike(true)
-        } else {
-            setExistingLike(false)
-        }
-    }, [truck, favorites, getCurrentUser])
 
-    useEffect(() => {
-        UserTruckFavoriteRepository.getAll().then(setFavorites)
-    }, [truckID])
+    // useEffect(() => {
+    //     truckId
+    //         ? TruckLocationRepository.getTruckLocationsByTruck(truckId).then(setTruckLocations)
+    //         : TruckLocationRepository.getTruckLocationsByTruck(truckID).then(setTruckLocations)
 
-    useEffect(() => {
-        truckId
-            ? TruckLocationRepository.getTruckLocationsByTruck(truckId).then(setTruckLocations)
-            : TruckLocationRepository.getTruckLocationsByTruck(truckID).then(setTruckLocations)
-
-    }, [truckId, truckID])
+    // }, [truckId, truckID])
 
     useEffect(() => {
         NeighborhoodRepository.getAll().then(setNeighborhoods)
     }, [truckID])
 
     useEffect(() => {
-        truckId
-            ? TruckRepository.get(truckId).then(setTruck)
-            : TruckRepository.get(truckID).then(setTruck)
+        if (truckId) {
+            TruckRepository.get(truckId).then(setTruck)
+
+        } else {
+            TruckRepository.get(truckID).then(setTruck)
+        }
     }, [truckId, truckID, roundedUserRating, newRating, newInfo])
 
     const createNewLocation = (truckId, neighborhoodId, dayId) => {
@@ -145,32 +121,21 @@ export const Truck = ({ truckID, setUser, userId, updateReadStateChange }) => {
         })
     }
 
-
     const currentDayId = new Date().getDay() + 1
     const currentTruckLocation = truck?.truckLocations?.find(location => location.dayId === currentDayId)
     const currentNeighborhood = neighborhoods?.find(neighborhood => neighborhood.id === currentTruckLocation?.neighborhoodId)
-    const foundLike = favorites?.find(favorite => favorite.userId === getCurrentUser().id && favorite.truckId === truck.id)
 
     const toggleFavorite = (favoriteTruckId) => {
         const newLike = {
-            userId: getCurrentUser().id,
             truckId: favoriteTruckId
         }
-        if (truckId) {
-            if (existingLike) {
-                const like = favorites.find(favorite => favorite.userId === getCurrentUser().id && favorite.truckId === truck.id)
-                UserTruckFavoriteRepository.delete(like.id).then(() => {
-                    setExistingLike(false)
-                    UserTruckFavoriteRepository.getAll().then(setFavorites)
-                })
-
-            } else {
-                UserTruckFavoriteRepository.add(newLike).then(() => {
-                    setExistingLike(true)
-                    UserTruckFavoriteRepository.getAll().then(setFavorites)
-                })
-            }
+        if (truck.favorite) {
+            const existingLike = UserTruckFavoriteRepository.getForUserAndTruck(truckId)
+            UserTruckFavoriteRepository.delete(existingLike.id).then(()=> alertNewInfo()) //find existing favorite then delete and trigger state change
+        } else {
+            UserTruckFavoriteRepository.add(newLike).then(()=> alertNewInfo()) //then trigger state change so that star images changes in browser
         }
+
     }
 
     let truckPrice = "$"
@@ -186,13 +151,8 @@ export const Truck = ({ truckID, setUser, userId, updateReadStateChange }) => {
             <div className="truck__info">
                 <div className="truck__heading">
                     <div className="truck__favorite">
-                        {
-                            truckId
-                                ? existingLike
-                                    ? <button key={foundLike?.id} className="star-icon" onClick={() => { toggleFavorite(truckId) }}><img alt="star" className="star-icon" id={`favoriteTruck--${foundLike?.id}`} src={Fav} /></button>
-                                    : <button key={truck.name} className="star-icon" onClick={() => { toggleFavorite(truck.id) }}><img alt="star" className="star-icon" id={`favoriteTruck--${foundLike?.id}`} src={NoFav} /></button>
-                                : ""
-                        }
+                        <button className="star-icon" onClick={() => { toggleFavorite(truckId) }}><img alt="star" className="star-icon" src={truck.favorite ? Fav : NoFav} /></button>
+
                     </div>
                     <div className="truck__name">
                         {truck.name}
@@ -259,7 +219,7 @@ export const Truck = ({ truckID, setUser, userId, updateReadStateChange }) => {
                     <div className="truck-info-details">
                         <div className="truck__media">
                             <div className="truck__image">
-                                <img className="truck__logo" src={truck.profileImgSrc} alt={`${truck.name} logo`} />
+                                <img className="truck__logo" src={truck.profile_img_src} alt={`${truck.name} logo`} />
                             </div>
                         </div>
 
@@ -268,28 +228,23 @@ export const Truck = ({ truckID, setUser, userId, updateReadStateChange }) => {
                             <div className="truck__info--hours">Typical Hours: {truck.hours}</div>
                             <div className="truck__info--typeTags">
                                 {
-                                    truck?.truckFoodTypes?.map(
+                                    truck?.food_types?.map(
                                         (type) => {
-
-                                            const foundType = foodTypes.find(foodType => foodType.id === type.foodTypeId)
-
-                                            return <div className="typeTag" key={type.id}>{foundType?.type}</div>
+                                            return <div className="typeTag" key={type.id}>{type.type}</div>
                                         })
                                 }
                             </div>
                             <div className="truck__info--dollars">{truckPrice}</div>
                             <div className="truck__info--rating ">
                                 {
-                                    truck.userRating === 0
+                                    truck.user_rating === 0
                                         ? <div>No Ratings Yet</div>
-                                        : <><Rating name="size-small" precision={0.5} value={roundedUserRating} size="small" readOnly />
+                                        : <><Rating name={`${truck.name}--rating`} precision={0.5} key={truck.user_rating} value={truck.user_rating} size="small" readOnly />
                                             <div className="truck-userStar">
                                                 {
-                                                    truck.userTruckReviews?.length > 0
-                                                        ? truck.userTruckReviews?.length > 1
-                                                            ? `(${truck.userTruckReviews?.length} ratings)`
-                                                            : `(${truck.userTruckReviews?.length} rating)`
-                                                        : ""
+                                                    truck.reviews?.length > 1
+                                                        ? `(${truck.reviews?.length} ratings)`
+                                                        : `(${truck.reviews?.length} rating)`
                                                 }
                                             </div></>
                                 }
@@ -379,13 +334,13 @@ export const Truck = ({ truckID, setUser, userId, updateReadStateChange }) => {
             <div className="truck-reviews-section">
                 <div className="truck-reviews-heading">
                     <h3 className="schedule-heading">Recent Reviews</h3>
-                    <Link to={`/reviews/${truck.id}`} className="all-reviews">{`View All (${truck.userTruckReviews?.length} reviews)`}</Link>
+                    <Link to={`/reviews/${truck.id}`} className="all-reviews">{`View All (${truck.reviews?.length} reviews)`}</Link>
                 </div>
                 <div className="truck__reviews card">
                     <div className="review-list reviews">
                         {
-                            reviews?.length > 0
-                                ? reviews?.slice(0, 3).map(review => {
+                            reviews.length > 0
+                                ? reviews.slice(0, 3).map(review => {
                                     return <div key={review.id} className="truck-review-card"><Review key={review.id} review={review} setTruck={setTruck} alertNewRating={alertNewRating} /></div>
                                 })
                                 : truckId
@@ -394,7 +349,7 @@ export const Truck = ({ truckID, setUser, userId, updateReadStateChange }) => {
                         }
                     </div>
                     {
-                        getCurrentUser().owner
+                        currentUser.owner
                             ? ""
                             : <div className="review-form"><ReviewForm truckId={truckId} setTruck={setTruck} alertNewRating={alertNewRating} /></div>
                     }

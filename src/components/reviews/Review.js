@@ -14,25 +14,19 @@ export const Review = ({ review, user, alertNewInfo, setTruck, alertNewRating, a
     const { getCurrentUser } = useSimpleAuth()
     const history = useHistory()
     const { truckId } = useParams()
-    
+
     const [modal, setModal] = useState(false)
     const reviewToggle = () => setModal(!modal)
     const [editModal, setEditModal] = useState(false)
     const editToggle = () => setEditModal(!editModal)
-    
+
     const [newDescription, setNewDescription] = useState("")
     const [selectedReview, setSelectedReview] = useState({})
     const [reviewer, setReviewer] = useState({})
 
-
     useEffect(() => {
-        if (user) {
-            setReviewer(user)
-        }
-    }, [user])
-
-    useEffect(() => {
-        ReviewRepository.getBasic(review.id).then(setSelectedReview)
+        // ReviewRepository.getBasic(review.id).then(setSelectedReview)
+        setSelectedReview(review)
     }, [review])
 
 
@@ -62,7 +56,8 @@ export const Review = ({ review, user, alertNewInfo, setTruck, alertNewRating, a
             <div className="review-card-heading">
                 <div className="review-date">{review.date}</div>
                 {
-                    review.user_account.id === getCurrentUser().id
+                    user || review.author
+
                         ? (<div className="review-options">
                             <Button color="secondary" onClick={editToggle}>Edit</Button>
 
@@ -139,15 +134,9 @@ export const Review = ({ review, user, alertNewInfo, setTruck, alertNewRating, a
             <Rating precision={0.5} name="size-medium" className="truck-userStar" defaultValue={review.rating} readOnly />
 
             {
-                truckId
-                    ? review.anonymous
-                        ? <div className="review-author">~ Anonymous</div>
-                        : <div className="review-author">~ {reviewer.firstName} {reviewer?.lastName?.charAt(0)}.</div>
-                    : review.userId !== getCurrentUser().id
-                        ? review.anonymous
-                            ? <div className="review-author">~ Anonymous</div>
-                            : <div className="review-author">~ {reviewer.firstName} {reviewer?.lastName?.charAt(0)}.</div>
-                        : ""
+                review.anonymous
+                    ? <div className="review-author">~ Anonymous</div>
+                    : <div className="review-author">~ {review.user_account.user.first_name} {review.user_account.user.last_name.charAt(0)}.</div>
             }
 
         </div>

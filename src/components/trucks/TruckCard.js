@@ -6,7 +6,7 @@ import UserTruckFavoriteRepository from "../../repositories/UserTruckFavoriteRep
 import Rating from '@mui/material/Rating';
 import '../trucks/TruckList.css';
 
-export const TruckCard = ({ thisTruck, truckId, newInfo }) => {
+export const TruckCard = ({ thisTruck, truckId, newInfo, favorite }) => {
     const history = useHistory()
     const [truck, setTruck] = useState({})
     const [favorites, setFavorites] = useState([])
@@ -28,11 +28,11 @@ export const TruckCard = ({ thisTruck, truckId, newInfo }) => {
         } else return false
     }, [thisTruck, truckId, newInfo])
 
-    useEffect(() => {
-        UserTruckFavoriteRepository.getAll().then(setFavorites)
-    }, [thisTruck])
+    // useEffect(() => {
+    //     UserTruckFavoriteRepository.getAll().then(setFavorites)
+    // }, [thisTruck])
 
-    const favorite = favorites.find(fav => fav.userId === getCurrentUser().id && fav.truckId === truck?.id)
+    // const favorite = favorites.find(fav => fav.userId === getCurrentUser().id && fav.truckId === truck?.id)
 
     useEffect(() => {
         let truckPrice = "$"
@@ -49,14 +49,14 @@ export const TruckCard = ({ thisTruck, truckId, newInfo }) => {
     return (
         <div className="card ">
             <div className="truck-card-body ">
-                <button onClick={() => { history.push(`/trucks/${truck?.id}`) }} className={truck.favorite ? "favorite card-body" : "regular card-body"}>
+                <button onClick={() => { history.push(`/trucks/${truck?.id}`) }} className={favorite ? "favorite card-body" : "regular card-body"}>
                     <img className="truck-logo" src={truck?.profile_img_src} alt={`${truck?.name} logo`} />
                 </button>
                 <div className="mini-info truck-rating ">
                     {
-                        truck.userRating === 0
+                        truck.user_rating === 0
                             ? <div className="truck-card-rating-text">No Ratings Yet</div>
-                            : <><Rating name={`truck-${truck.id}-rating`} precision={0.5} key={truck.id} value={roundedUserRating} size="small" readOnly /> <div className="truck-card-rating-text">{`(${truck.userTruckReviews?.length})`}</div></>
+                            : <><Rating name={`truck-${truck.id}-rating`} precision={0.5} key={truck.id} value={truck.user_rating} size="small" readOnly /> <div className="truck-card-rating-text">{`(${truck.reviews?.length})`}</div></>
                     }
                 </div>
                 <div className="mini-info">

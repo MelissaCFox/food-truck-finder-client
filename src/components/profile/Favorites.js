@@ -19,7 +19,7 @@ export const Favorites = ({ thisUser, newInfo }) => {
 
                     ? favorites.map(favorite => {
                         return <li className="card truck" key={favorite.id}>
-                            <TruckCard key={favorite.id} thisTruck={favorite.truck} newInfo={newInfo} />
+                            <TruckCard key={favorite.id} thisTruck={favorite.truck} newInfo={newInfo} favorite={true} />
                         </li>
                     })
                     : <li className="card truck"><div className="card-body">No Favorites Yet</div></li>

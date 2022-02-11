@@ -13,6 +13,10 @@ const userTruckFavorites = {
         // return await fetchIt(`${Settings.remoteURL}/userTruckFavorites?_expand=user&_expand=truck`)
     },
 
+    async getForUserAndTruck(truckId) {
+        return await fetchIt(`${Settings.remoteURL}/userTruckFavorites?truckId=${truckId}`)
+    },
+
     async add(favorite) {
         return await fetchIt(`${Settings.remoteURL}/userTruckFavorites`, "POST", JSON.stringify(favorite))
     },
