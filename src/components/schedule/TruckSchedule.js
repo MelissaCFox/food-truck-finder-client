@@ -1,45 +1,52 @@
 import { useState } from "react"
 import { useEffect } from "react/cjs/react.development"
 import TruckLocationRepository from "../../repositories/TruckLocationRepository"
+import NeighborhoodRepository from "../../repositories/NeighborhoodRepository"
 import { NeighborhoodCard } from "../neighborhoods/NeighborhoodCard"
 import '../trucks/TruckList.css';
 
 
-export const TruckSchedule = ({ dayId, truckId, truckPage, createNewLocation, neighborhoods, newLocation, alertNewInfo }) => {
-    const [truckNeighborhoods, setTruckNeighborhoods] = useState([])
-    const [truckNeighborhood, setTruckNeighborhood] = useState({})
+export const TruckSchedule = ({ dayId, truckLocations, truckId, truckPage, neighborhoods, createNewLocation, newLocation, alertNewInfo }) => {
+    // const [truckNeighborhoods, setTruckNeighborhoods] = useState([])
+    const [neighborhood, setNeighborhood] = useState({})
+
+    // useEffect(() => {
+    //     if (truckId) {
+    //         TruckLocationRepository.getTruckLocationsByTruckAndDay(truckId, dayId).then(setTruckNeighborhoods)
+    //     }
+    // }, [truckId, dayId, newLocation])
 
     useEffect(() => {
-        if (truckId) {
-            TruckLocationRepository.getTruckLocationsByTruckAndDay(truckId, dayId).then(setTruckNeighborhoods)
+        if (truckLocations) {
+            const location = truckLocations.find(location => location.day.id===dayId)
+            setNeighborhood(location?.neighborhood)
         }
-    }, [truckId, dayId, newLocation])
+    }, [truckLocations])
 
-    useEffect(() => {
-        if (truckNeighborhoods && neighborhoods) {
-            const foundNeighborhood = neighborhoods?.find(neighborhood => neighborhood.id === truckNeighborhoods[0]?.neighborhoodId)
-            setTruckNeighborhood(foundNeighborhood)
-        }
-    }, [truckNeighborhoods, neighborhoods])
+    // useEffect(() => {
+    //     if (truckNeighborhoods && neighborhoods) {
+    //         const foundNeighborhood = neighborhoods?.find(neighborhood => neighborhood.id === truckNeighborhoods[0]?.neighborhoodId)
+    //         setTruckNeighborhood(foundNeighborhood)
+    //     }
+    // }, [truckNeighborhoods, neighborhoods])
 
 
     return (
         <>
             {
-                truckId
-                    ? truckPage
-                        ? truckNeighborhood
-                            ? <div className="schedule-card" ><NeighborhoodCard key={truckNeighborhood.id} thisNeighborhood={truckNeighborhood} /></div>
+                truckPage
+                        ? neighborhood?.id
+                            ? <div className="schedule-card" ><NeighborhoodCard key={neighborhood.id} thisNeighborhood={neighborhood} /></div>
                             : <div className="schedule-card" ><div className="neighborhood-card"><div className="neighborhood-card-body">Off Today</div></div></div>
 
-                        : truckNeighborhood
+                        : neighborhood
                             ? (
                                 <div className="schedule-card" >
-                                    <div className="neighborhood-label">{truckNeighborhood.name}</div>
-                                    <NeighborhoodCard key={`Profile--${truckId}--${dayId}`} thisNeighborhood={truckNeighborhood} />
+                                    <div className="neighborhood-label">{neighborhood.name}</div>
+                                    <NeighborhoodCard key={`Profile--${truckId}--${dayId}`} thisNeighborhood={neighborhood} />
                                     <div className="form-group">
                                         <select
-                                            key={truckNeighborhood.id}
+                                            key={neighborhood.id}
                                             defaultValue=""
                                             name="location"
                                             id="locationId"
@@ -73,7 +80,7 @@ export const TruckSchedule = ({ dayId, truckId, truckPage, createNewLocation, ne
                                         id="locationId"
                                         onChange={e => {
                                             createNewLocation(truckId, e.target.value, dayId)
-                                            TruckLocationRepository.getTruckLocationsByTruckAndDay(truckId, dayId).then(setTruckNeighborhoods)
+                                            TruckLocationRepository.getTruckLocationsByTruckAndDay(truckId, dayId).then(res => setNeighborhood(res.neighborhood))
                                         }}
                                         className="form-control"
                                     >
@@ -87,8 +94,7 @@ export const TruckSchedule = ({ dayId, truckId, truckPage, createNewLocation, ne
                                     </select>
                                 </div>
                             </div>
-
-                    : ""
+                    
             }
         </>
     )

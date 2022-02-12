@@ -76,12 +76,12 @@ export const Truck = ({ truckID, setUser, userId, updateReadStateChange }) => {
     }, [])
 
 
-    // useEffect(() => {
-    //     truckId
-    //         ? TruckLocationRepository.getTruckLocationsByTruck(truckId).then(setTruckLocations)
-    //         : TruckLocationRepository.getTruckLocationsByTruck(truckID).then(setTruckLocations)
+    useEffect(() => {
+        truckId
+            ? TruckLocationRepository.getTruckLocationsByTruck(truckId).then(setTruckLocations)
+            : TruckLocationRepository.getTruckLocationsByTruck(truckID).then(setTruckLocations)
 
-    // }, [truckId, truckID])
+    }, [truckId, truckID])
 
     useEffect(() => {
         NeighborhoodRepository.getAll().then(setNeighborhoods)
@@ -316,13 +316,13 @@ export const Truck = ({ truckID, setUser, userId, updateReadStateChange }) => {
                                 <div className="day__name">{day.day}</div>
                                 <TruckSchedule key={`truck--${truck.id}--schedule--${day.id}`}
                                     dayId={day.id}
-                                    truckId={truck.id}
+                                    // truckId={truck.id}
                                     truckPage={truckId}
-                                    createNewLocation={createNewLocation}
+                                    // createNewLocation={createNewLocation}
                                     truckLocations={truckLocations}
                                     setTruckLocations={setTruckLocations}
                                     neighborhoods={neighborhoods}
-                                    newLocation={newLocation}
+                                    // newLocation={newLocation}
                                     alertNewInfo={alertNewInfo}
                                 />
                             </div>
