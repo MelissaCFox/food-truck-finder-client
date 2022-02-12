@@ -28,6 +28,7 @@ import { TruckForm } from "../forms/TruckForm"
 
 
 export const Truck = ({ truckID, setUser, userId, updateReadStateChange }) => {
+    const currentDayId = new Date().getDay() + 1
     const [truck, setTruck] = useState({})
     const { truckId } = useParams()
     const [neighborhoods, setNeighborhoods] = useState([])
@@ -121,10 +122,7 @@ export const Truck = ({ truckID, setUser, userId, updateReadStateChange }) => {
         })
     }
 
-    const currentDayId = new Date().getDay() + 1
-    const currentTruckLocation = truck?.truckLocations?.find(location => location.dayId === currentDayId)
-    const currentNeighborhood = neighborhoods?.find(neighborhood => neighborhood.id === currentTruckLocation?.neighborhoodId)
-
+    
     const toggleFavorite = (favoriteTruckId) => {
         const newLike = {
             truckId: favoriteTruckId
@@ -278,12 +276,9 @@ export const Truck = ({ truckID, setUser, userId, updateReadStateChange }) => {
                     </div>
 
                     <div className="truck__currentLocation">
-                        {
-                            currentNeighborhood
-                                ? <><div className="truck-location-heading">Find Us Today </div><div className="truck-location-card"><NeighborhoodCard thisNeighborhood={currentNeighborhood} /></div></>
-                                : <><div className="truck-location-heading">Find Us Today </div><div className="neighborhood-card"><div className="card-body">We Are Off Today!</div></div></>
-
-                        }
+                        <div className="truck-location-heading">Find Us Today </div><div className="truck-location-card">
+                            <TruckSchedule neighborhoods={neighborhoods} truckPage={truckId} dayId={currentDayId} truckLocations={truckLocations} />
+                        </div>
                         {
                             truckId
                                 ? <><div className="suggestion-label truck-location-heading">Know A Good Spot For Us To Visit?</div>
@@ -316,14 +311,12 @@ export const Truck = ({ truckID, setUser, userId, updateReadStateChange }) => {
                                 <div className="day__name">{day.day}</div>
                                 <TruckSchedule key={`truck--${truck.id}--schedule--${day.id}`}
                                     dayId={day.id}
-                                    // truckId={truck.id}
+                                    truckId={truck.id}
                                     truckPage={truckId}
-                                    // createNewLocation={createNewLocation}
+                                    createNewLocation={createNewLocation}
                                     truckLocations={truckLocations}
-                                    setTruckLocations={setTruckLocations}
                                     neighborhoods={neighborhoods}
-                                    // newLocation={newLocation}
-                                    alertNewInfo={alertNewInfo}
+
                                 />
                             </div>
                         })

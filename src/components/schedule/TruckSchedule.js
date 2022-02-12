@@ -6,15 +6,9 @@ import { NeighborhoodCard } from "../neighborhoods/NeighborhoodCard"
 import '../trucks/TruckList.css';
 
 
-export const TruckSchedule = ({ dayId, truckLocations, truckId, truckPage, neighborhoods, createNewLocation, newLocation, alertNewInfo }) => {
-    // const [truckNeighborhoods, setTruckNeighborhoods] = useState([])
+export const TruckSchedule = ({ dayId, truckLocations, truckId, truckPage, neighborhoods, createNewLocation }) => {
     const [neighborhood, setNeighborhood] = useState({})
 
-    // useEffect(() => {
-    //     if (truckId) {
-    //         TruckLocationRepository.getTruckLocationsByTruckAndDay(truckId, dayId).then(setTruckNeighborhoods)
-    //     }
-    // }, [truckId, dayId, newLocation])
 
     useEffect(() => {
         if (truckLocations) {
@@ -22,14 +16,6 @@ export const TruckSchedule = ({ dayId, truckLocations, truckId, truckPage, neigh
             setNeighborhood(location?.neighborhood)
         }
     }, [truckLocations])
-
-    // useEffect(() => {
-    //     if (truckNeighborhoods && neighborhoods) {
-    //         const foundNeighborhood = neighborhoods?.find(neighborhood => neighborhood.id === truckNeighborhoods[0]?.neighborhoodId)
-    //         setTruckNeighborhood(foundNeighborhood)
-    //     }
-    // }, [truckNeighborhoods, neighborhoods])
-
 
     return (
         <>
@@ -94,7 +80,6 @@ export const TruckSchedule = ({ dayId, truckLocations, truckId, truckPage, neigh
                                     </select>
                                 </div>
                             </div>
-                    
             }
         </>
     )
