@@ -138,11 +138,10 @@ export const NeighborhoodTruckList = () => {
             <ul className="neighborhoods">
                 {
                     neighborhoods.map(neighborhood => {
-                        const todaysTrucks = neighborhood.truckLocations?.filter(truckLocation => truckLocation.dayId === dayId + 1)
-                        if (todaysTrucks?.length > 0) {
-
+                        const trucksToday = neighborhood.days_with_trucks?.find(day => day.id === dayId + 1)
+                        if (trucksToday) {
                             const src = imgSrc(neighborhood)
-                            return <TruckList className="multi-truck-list " key={neighborhood.id} src={src} neighborhood={neighborhood} date={dateForList} favorites={favorites} typePref={typePref} sortPref={sortPref} />
+                            return <TruckList className="multi-truck-list " key={neighborhood.id} src={src} neighborhoodId={neighborhood.id} dayId={dayId + 1} favorites={favorites} typePref={typePref} sortPref={sortPref} />
 
                         } else return false
                     })
