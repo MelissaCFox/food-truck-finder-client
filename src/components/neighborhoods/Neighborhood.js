@@ -4,6 +4,7 @@ import { useEffect } from "react/cjs/react.development"
 import NeighborhoodRepository from "../../repositories/NeighborhoodRepository"
 import TruckLocationRepository from "../../repositories/TruckLocationRepository"
 import { NeighborhoodSchedule } from "../schedule/NeighborhoodSchedule"
+import Settings from "../../repositories/Settings"
 import { TruckCard } from "../trucks/TruckCard"
 import FivePoints from "../images/5Points.png"
 import TwelveSouth from "../images/12South.png"
@@ -28,6 +29,7 @@ import MapWestEnd from "../images/MapWestEnd.png";
 import MapTheNations from "../images/MapTheNations.png";
 import MapTheGulch from "../images/MapTheGulch.png";
 import MapBerryHill from "../images/MapBerryHill.png";
+
 
 
 export const Neighborhood = () => {
@@ -104,7 +106,7 @@ export const Neighborhood = () => {
             <div className="neighborhood__details">
                 <div className="neighborhood__info neighborhood-page-card ">
                     <div className="neighborhood__id">
-                        <div className="neighborhood__image"><img alt={neighborhood.name} className="neighborhood__image" src={src} /></div>
+                        <div className="neighborhood__image"><img alt={neighborhood.name} className="neighborhood__image" src={`${Settings.remoteURL}${neighborhood.profile_img_src}`} /></div>
                         <div className="neighborhood__description">
                             <div>{neighborhood.description}</div>
                             <div>Learn More at <a className="NG-link" target="blank" href={neighborhood.linkNG}>Nashville Guru</a></div>

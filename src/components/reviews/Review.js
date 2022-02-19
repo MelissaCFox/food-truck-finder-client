@@ -136,7 +136,7 @@ export const Review = ({ review, user, alertNewInfo, setTruck, alertNewRating, a
             {
                 review.anonymous
                     ? <div className="review-author">~ Anonymous</div>
-                    : <div className="review-author">~ {review.user_account.user.first_name} {review.user_account.user.last_name.charAt(0)}.</div>
+                    : <div className="review-author">~ {review.user_account.user.first_name} {review.user_account?.user.last_name?.charAt(0)}.</div>
             }
 
         </div>

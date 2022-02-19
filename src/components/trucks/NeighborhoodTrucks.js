@@ -3,18 +3,9 @@ import { useLocation } from "react-router-dom/cjs/react-router-dom.min"
 import { Input } from "reactstrap"
 import FoodTypeRepository from "../../repositories/FoodTypeRepository"
 import NeighborhoodRepository from "../../repositories/NeighborhoodRepository"
+import UserTruckFavoriteRepository from '../../repositories/UserTruckFavoriteRepository'
+import Settings from "../../repositories/Settings"
 import { TruckList } from "./TruckList"
-import FivePoints from "../images/5Points.png"
-import TwelveSouth from "../images/12South.png"
-import BerryHill from "../images/BerryHill.png"
-import Downtown from "../images/Downtown.png"
-import Germantown from "../images/Germantown.png"
-import GreenHills from "../images/GreenHills.png"
-import Hillsboro from "../images/Hillsboro.png"
-import SylvanPark from "../images/SylvanPark.png"
-import TheGulch from "../images/TheGulch.png"
-import TheNations from "../images/TheNations.png"
-import WestEnd from "../images/WestEnd.png"
 import './TruckList.css';
 
 
@@ -60,34 +51,11 @@ export const NeighborhoodTruckList = () => {
         NeighborhoodRepository.getAll().then(setNeighborhoods)
     }, [])
 
-    const imgSrc = (neighborhood) => {
-        let src = ""
-        if (neighborhood.name === "12 South") {
-            src = TwelveSouth
-        } else if (neighborhood.name === "Berry Hill") {
-            src = BerryHill
-        } else if (neighborhood.name === "Downtown") {
-            src = Downtown
-        } else if (neighborhood.name === "Germantown") {
-            src = Germantown
-        } else if (neighborhood.name === "Green Hills") {
-            src = GreenHills
-        } else if (neighborhood.name === "The Gulch") {
-            src = TheGulch
-        } else if (neighborhood.name === "Hillsboro Village") {
-            src = Hillsboro
-        } else if (neighborhood.name === "The Nations") {
-            src = TheNations
-        } else if (neighborhood.name === "Sylvan Park") {
-            src = SylvanPark
-        } else if (neighborhood.name === "West End") {
-            src = WestEnd
-        } else if (neighborhood.name === "5 Points") {
-            src = FivePoints
-        }
-        return src
-
-    }
+    const [favoriteTrucks, setFavoriteTrucks] = useState([])
+    
+    useEffect(()=> {
+        UserTruckFavoriteRepository.getAll().then(setFavoriteTrucks)
+    },[])
 
     return (
         <>
@@ -140,8 +108,8 @@ export const NeighborhoodTruckList = () => {
                     neighborhoods.map(neighborhood => {
                         const trucksToday = neighborhood.days_with_trucks?.find(day => day.id === dayId + 1)
                         if (trucksToday) {
-                            const src = imgSrc(neighborhood)
-                            return <TruckList className="multi-truck-list " key={neighborhood.id} src={src} neighborhoodId={neighborhood.id} dayId={dayId + 1} favorites={favorites} typePref={typePref} sortPref={sortPref} />
+                            const src = `${Settings.remoteURL}${neighborhood.profile_img_src}`
+                            return <TruckList className="multi-truck-list " key={neighborhood.id} src={src} neighborhoodId={neighborhood.id} dayId={dayId + 1} favorites={favoriteTrucks} />
 
                         } else return false
                     })

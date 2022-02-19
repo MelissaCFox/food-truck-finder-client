@@ -9,41 +9,49 @@ import { TruckCard } from "./TruckCard"
 import './TruckList.css';
 
 
-export const TruckList = ({ neighborhoodId, dayId, favorites, typePref, sortPref, src }) => {
+export const TruckList = ({ neighborhoodId, dayId, favorites, typePref, sortPref, src, favoriteTrucks }) => {
     const [truckLocations, updateTruckLocations] = useState([])
     const [trucks, setTrucks] = useState([])
     const { getCurrentUser } = useSimpleAuth()
     const [truckFoodTypes, setTruckFoodTypes] = useState([])
     const history = useHistory()
 
+    const [userFavorites, setFavorites] = useState([])
     useEffect(() => {
-        TruckFoodTypeRepository.getAll().then(setTruckFoodTypes)
-    }, [])
+        if (favoriteTrucks) {
+            setFavorites(favoriteTrucks)
+        }
+    }, [favoriteTrucks])
 
 
-    useEffect(() => {
-        TruckRepository.getAll().then(setTrucks)
-    }, [])
+    // useEffect(() => {
+    //     TruckFoodTypeRepository.getAll().then(setTruckFoodTypes)
+    // }, [])
+
+
+    // useEffect(() => {
+    //     TruckRepository.getAll().then(setTrucks)
+    // }, [])
 
     useEffect(() => {
         TruckLocationRepository.getTruckLocationsByNeighborhoodAndDay(neighborhoodId, dayId).then(updateTruckLocations)
     }, [neighborhoodId, dayId])
 
-    const sortTruckLocations = (array) => {
-        if (sortPref === "priceAsc") {
-            return array.sort((a, b) => {
-                return a.truck.dollars - b.truck.dollars
-            })
-        } else if (sortPref === "priceDesc") {
-            return array.sort((a, b) => {
-                return b.truck.dollars - a.truck.dollars
-            })
-        } else if (sortPref === "userRating") {
-            return array.sort((a, b) => {
-                return b.truck.userRating - a.truck.userRating
-            })
-        }
-    }
+    // const sortTruckLocations = (array) => {
+    //     if (sortPref === "priceAsc") {
+    //         return array.sort((a, b) => {
+    //             return a.truck.dollars - b.truck.dollars
+    //         })
+    //     } else if (sortPref === "priceDesc") {
+    //         return array.sort((a, b) => {
+    //             return b.truck.dollars - a.truck.dollars
+    //         })
+    //     } else if (sortPref === "userRating") {
+    //         return array.sort((a, b) => {
+    //             return b.truck.userRating - a.truck.userRating
+    //         })
+    //     }
+    // }
 
     // useEffect(() => {
     //     const currentDayId = date.getDay() + 1
@@ -119,10 +127,15 @@ export const TruckList = ({ neighborhoodId, dayId, favorites, typePref, sortPref
                 <div className="trucks scrollbar scrollbar-juicy-peach">
                     {
                         truckLocations.map(truckLocation => {
-                            return <div className="truck-list-card" key={truckLocation.truck.id}>
-                                <TruckCard thisTruck={truckLocation.truck} />
-                            </div>
-                        })
+
+                                const favorite = userFavorites.find(fav => fav.truck_id === truckLocation.truck_id)
+                                return <div className="truck-list-card" key={truckLocation.truck.id}>
+                                    <TruckCard thisTruck={truckLocation.truck} favorite={favorite} />
+                                </div>
+                            
+                            }
+                            )
+                        
 
                     }
                 </div>
