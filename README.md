@@ -55,7 +55,7 @@ As I was learning Python and Django, I then wanted to re-work much of my applica
 
 ```sh
 git@github.com:MelissaCFox/food-truck-finder-client.git
-cd Food-Truck-Finder
+cd food-truck-finder-client
 ```
 2. Access the data
 
