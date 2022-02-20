@@ -6,6 +6,7 @@ import { TruckCard } from "../trucks/TruckCard"
 export const SearchResults = () => {
     const location = useLocation()
     const trucks = Array.from(location.state?.trucks)
+    const neighborhoods = Array.from(location.state?.neighborhoods)
 
     const displayTrucks = () => {
         if (trucks.length > 0) {
@@ -30,13 +31,13 @@ export const SearchResults = () => {
     }
 
     const displayNeighborhoods = () => {
-        if (location.state?.neighborhoods.length > 0) {
+        if (neighborhoods.length > 0) {
             return (
                 <>
                     <div className="section">
                         <div className="truck-results">
                             {
-                                location.state.neighborhoods.map(neighborhood => <li className="card neighborhood" key={neighborhood.id}><NeighborhoodCard key={neighborhood.id} thisNeighborhood={neighborhood} /></li>)
+                                neighborhoods.map(neighborhood => <li className="card neighborhood" key={neighborhood.id}><NeighborhoodCard key={neighborhood.id} thisNeighborhood={neighborhood} /></li>)
                             }
                         </div>
                     </div>

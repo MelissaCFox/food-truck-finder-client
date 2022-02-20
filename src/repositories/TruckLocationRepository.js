@@ -3,6 +3,13 @@ import { fetchIt } from "./Fetch";
 
 const TruckLocationRepository = {
 
+    async getTruckLocationsWithParams(params) {
+        return await fetchIt(`${Settings.remoteURL}/truckLocations${params}`)
+        // return await fetchIt(`${Settings.remoteURL}/truckLocations?truckId=${truckId}&_expand=truck&_expand=day&_expand=neighborhood&_sort=dayId`)
+    },
+
+
+    
     async getTruckLocationsByDay(dayId) {
         return await fetchIt(`${Settings.remoteURL}/truckLocations?dayId=${dayId}`)
         // return await fetchIt(`${Settings.remoteURL}/truckLocations?dayId=${dayId}&_expand=truck`)

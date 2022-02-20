@@ -94,9 +94,9 @@ export const NeighborhoodTruckList = () => {
                         <label className="dropDown label">Sort Trucks By</label>
                         <select className="dropDown" id="sortPref" type="select" onChange={e => setSortPref(e.target.value)}>
                             <option value="">--All--</option>
-                            <option value="priceAsc">Price (low to high)</option>
-                            <option value="priceDesc">Price (high to low)</option>
-                            <option value="userRating">User Rating</option>
+                            <option value="dollars">Price (low to high)</option>
+                            <option value={`dollars&desc=true`}>Price (high to low)</option>
+                            <option value="user_rating">User Rating</option>
 
                         </select>
                     </div>
@@ -109,7 +109,14 @@ export const NeighborhoodTruckList = () => {
                         const trucksToday = neighborhood.days_with_trucks?.find(day => day.id === dayId + 1)
                         if (trucksToday) {
                             const src = `${Settings.remoteURL}${neighborhood.profile_img_src}`
-                            return <TruckList className="multi-truck-list " key={neighborhood.id} src={src} neighborhoodId={neighborhood.id} dayId={dayId + 1} favorites={favoriteTrucks} />
+                            return <TruckList className="multi-truck-list " key={neighborhood.id} src={src} 
+                            neighborhoodId={neighborhood.id} 
+                            dayId={dayId + 1} 
+                            favoriteTrucks={favoriteTrucks}
+                            favorites={favorites}
+                            typePref={typePref}
+                            sortPref={sortPref}
+                            />
 
                         } else return false
                     })

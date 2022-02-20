@@ -2,9 +2,11 @@ import { useEffect, useState } from "react"
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min"
 import useSimpleAuth from "../../hooks/ui/useSimpleAuth"
 import TruckRepository from "../../repositories/TruckRepository"
+import Settings from "../../repositories/Settings"
 import UserTruckFavoriteRepository from "../../repositories/UserTruckFavoriteRepository"
 import Rating from '@mui/material/Rating';
 import '../trucks/TruckList.css';
+
 
 export const TruckCard = ({ thisTruck, truckId, newInfo, favorite }) => {
     const history = useHistory()
@@ -50,7 +52,7 @@ export const TruckCard = ({ thisTruck, truckId, newInfo, favorite }) => {
         <div className="card ">
             <div className="truck-card-body ">
                 <button onClick={() => { history.push(`/trucks/${truck?.id}`) }} className={favorite ? "favorite card-body" : "regular card-body"}>
-                    <img className="truck-logo" src={truck?.profile_img_src} alt={`${truck?.name} logo`} />
+                    <img className="truck-logo" src={`${Settings.remoteURL}${truck.profile_img_src}`} alt={`${truck?.name} logo`} />
                 </button>
                 <div className="mini-info truck-rating ">
                     {

@@ -24,6 +24,7 @@ import WebsiteIcon from "./images/WebsiteIcon.png"
 import ReviewRepository from "../../repositories/ReviewRepository"
 import { useLocation } from "react-router-dom"
 import { TruckForm } from "../forms/TruckForm"
+import Settings from "../../repositories/Settings";
 
 
 
@@ -149,7 +150,9 @@ export const Truck = ({ truckID, setUser, userId, updateReadStateChange }) => {
             <div className="truck__info">
                 <div className="truck__heading">
                     <div className="truck__favorite">
-                        <button className="star-icon" onClick={() => { toggleFavorite(truckId) }}><img alt="star" className="star-icon" src={truck.favorite ? Fav : NoFav} /></button>
+                        <button className="star-icon" onClick={() => { toggleFavorite(truckId) }}>
+                            <img alt="star" className="star-icon" src={truck.favorite ? Fav : NoFav} />
+                            </button>
 
                     </div>
                     <div className="truck__name">
@@ -217,7 +220,7 @@ export const Truck = ({ truckID, setUser, userId, updateReadStateChange }) => {
                     <div className="truck-info-details">
                         <div className="truck__media">
                             <div className="truck__image">
-                                <img className="truck__logo" src={truck.profile_img_src} alt={`${truck.name} logo`} />
+                                <img className="truck__logo" src={`${Settings.remoteURL}${truck.profile_img_src}`} alt={`${truck.name} logo`} />
                             </div>
                         </div>
 

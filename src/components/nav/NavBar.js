@@ -5,6 +5,7 @@ import Settings from "../../repositories/Settings";
 import TruckRepository from "../../repositories/TruckRepository";
 import './NavBar.css';
 import FTFLogo from "../images/FTFLogoLogin.png"
+import { fetchIt } from "../../repositories/Fetch";
 
 
 export const NavBar = () => {
@@ -24,7 +25,7 @@ export const NavBar = () => {
 
     useEffect(() => {
         setWelcome(welcomes[Math.floor(Math.random() * 5)])
-    },[welcomes])
+    }, [welcomes])
 
 
 
@@ -38,24 +39,15 @@ export const NavBar = () => {
         }
 
         const fetchArray = []
-        fetchArray.push(fetch(`${Settings.remoteURL}/trucks?name_like=${encodeURI(terms)}`)
-            .then(r => r.json())
+        fetchArray.push(fetchIt(`${Settings.remoteURL}/trucks?q=${terms}`)
             .then(trucks => {
                 trucks.forEach((truck) => {
-                    foundItems.trucksSet.add(truck.id)
+                    foundItems.trucksSet.add(truck)
                 })
             })
         )
-        fetchArray.push(fetch(`${Settings.remoteURL}/trucks?description_like=${encodeURI(terms)}`)
-            .then(r => r.json())
-            .then(trucks => {
-                trucks.forEach((truck) => {
-                    foundItems.trucksSet.add(truck.id)
-                })
-            })
-        )
-        fetchArray.push(fetch(`${Settings.remoteURL}/neighborhoods?name_like=${encodeURI(terms)}`)
-            .then(r => r.json())
+
+        fetchArray.push(fetchIt(`${Settings.remoteURL}/neighborhoods?q=${terms}`)
             .then(neighborhoods => {
                 foundItems.neighborhoods = neighborhoods
             })
@@ -63,19 +55,14 @@ export const NavBar = () => {
 
         Promise.all(fetchArray)
             .then(() => {
-                const truckFetchArray = []
-                foundItems.trucksSet.forEach((truckId) => {
-                    truckFetchArray.push(TruckRepository.get(truckId).then(truck => foundItems.trucks.push(truck)))
-
+                foundItems.trucksSet.forEach((truck) => {
+                    foundItems.trucks.push(truck)
                 })
-                Promise.all(truckFetchArray)
-                    .then(() => {
-                        history.push({
-                            pathname: "/search",
-                            state: foundItems
-                        })
+                history.push({
+                    pathname: "/search",
+                    state: foundItems
+                })
 
-                    })
             })
 
 
@@ -114,7 +101,7 @@ export const NavBar = () => {
                             <li className="nav-item dropdown">
                                 {
                                     isAuthenticated()
-                                        ? <div className="name-btn"><button className="nav-link name-btn" onClick={() => { history.push("/profile") }}><div className="name">{welcome}, {currentUser?.firstName} {currentUser?.lastName}!</div></button></div>
+                                        ? <div className="name-btn"><button className="nav-link name-btn" onClick={() => { history.push("/profile") }}><div className="name">{welcome}, {currentUser?.firstName}!</div></button></div>
                                         : <Link className="nav-link" to="/login">Login</Link>
                                 }
                             </li>
@@ -134,7 +121,7 @@ export const NavBar = () => {
 
                         </ul>
                     </div>
-                    
+
                 </div>
             </nav>
         </div>
