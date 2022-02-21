@@ -22,6 +22,8 @@ Food Truck Finder is an application for users to locate and keep track of their 
 
 This initial application was developed over the course of two weeks, primarily using the React library for JavaScript, with additional features and enhancements added over an additional 2 week period. My developmental goals throughout this build were to increase my understanding and proficiency of the use of props, as well as to further develop my skills at manipulating state to create a dynamic, responsive CRUD user interface.
 
+As I was learning Python and Django, I then wanted to re-work much of my application in order to build out the back-end on my own, using a SQLite database. This is the result of that re-build - I was able to cut down on the amount of network calls occuring throughout the user experience as well as implement general efficiency improvements throughout.
+
 ## Features
 - Users can view a list of food trucks currently located in Nashville.
 - Users can search and filter food truck list by date, food type, and/or favorites, as well as sort the list by price range and average user rating.
@@ -38,8 +40,11 @@ This initial application was developed over the course of two weeks, primarily u
 - JavaScript
 - React
 - Reacstrap, MUI
+- Python
+- Django
+- SQL
+- SQLite
 - Github
-- JSON Server
 - Visual Studio Code
 
 ---
@@ -49,12 +54,12 @@ This initial application was developed over the course of two weeks, primarily u
 1. Clone this repository and change to the directory in the terminal.
 
 ```sh
-git@github.com:MelissaCFox/Food-Truck-Finder.git
-cd Food-Truck-Finder
+git@github.com:MelissaCFox/food-truck-finder-client.git
+cd food-truck-finder-client
 ```
 2. Access the data
 
-<a href="https://github.com/MelissaCFox/food-truck-finder-api" target="_blank" rel="noreferrer"><img src="https://img.shields.io/badge/-Click%20Here-blue" alt="Food Truck Finder API Repository" style="height: 30px !important; width: 100px !important;" /></a>
+<a href="https://github.com/MelissaCFox/food-truck-finder-server" target="_blank" rel="noreferrer"><img src="https://img.shields.io/badge/-Click%20Here-blue" alt="Food Truck Finder Data Server" style="height: 30px !important; width: 100px !important;" /></a>
 
 3. Launch the application
 
