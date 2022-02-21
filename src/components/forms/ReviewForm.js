@@ -11,7 +11,7 @@ export const ReviewForm = ({ truckId, setTruck, alertNewRating }) => {
     const [review, setReview] = useState("")
     const [anonymousState, setAnonymous] = useState(false)
     const toggleAnonymous = () => setAnonymous(!anonymousState)
-    const [rating, setRating] = useState(3)
+    const [rating, setRating] = useState(0)
 
     const submitReview = (event) => {
         event.preventDefault()
@@ -23,10 +23,11 @@ export const ReviewForm = ({ truckId, setTruck, alertNewRating }) => {
         }
 
 
-        if (review) {
-            ReviewRepository.addAndUpdate(reviewObj)
+        if (review && rating !=="0") {
+            ReviewRepository.add(reviewObj)
                 .then(() => {
                     document.getElementById("review-form").reset()
+                    document.getElementById("reviewForm-rating").value=0
                     TruckRepository.get(parseInt(truckId))
                         .then((truck) => {
                             setTruck(truck)
@@ -44,7 +45,7 @@ export const ReviewForm = ({ truckId, setTruck, alertNewRating }) => {
             </div>
 
             <div>
-            <Rating name="half-rating" defaultValue={3} precision={1} onChange={e => setRating(parseInt(e.target.value))}/>
+            <Rating id="reviewForm-rating" name="half-rating" defaultValue={0} precision={1} onChange={e => setRating(parseInt(e.target.value))}/>
             </div>
 
             <div className="form-group anonymous-check">

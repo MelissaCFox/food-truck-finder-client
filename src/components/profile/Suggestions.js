@@ -6,11 +6,11 @@ import SuggestionRepository from "../../repositories/SuggestionsRepository"
 import UserRepository from "../../repositories/UserRepository"
 
 
-export const Suggestions = ({ updateReadStateChange }) => {
+export const Suggestions = ({ updateReadStateChange, suggestions }) => {
     const { getCurrentUser } = useSimpleAuth()
-    const [unreadSuggestions, setUnreadSuggestions] = useState([])
+    const [unreadSuggestionsNum, setUnreadSuggestionsNum] = useState(0)
 
-    const [suggestions, setSuggestions] = useState([])
+    const [suggestionsList, setSuggestionsList] = useState([])
 
     const [messageList, setMessageList] = useState("unread")
 
@@ -19,30 +19,32 @@ export const Suggestions = ({ updateReadStateChange }) => {
 
 
     useEffect(() => {
-        UserRepository.getAllTruckOwners()
-            .then((res) => {
-                const foundTruckOwner = res.find(truckOwner => truckOwner.userId === getCurrentUser().id)
+        // UserRepository.getAllTruckOwners()
+        //     .then((res) => {
+        //         const foundTruckOwner = res.find(truckOwner => truckOwner.userId === getCurrentUser().id)
 
-                if (foundTruckOwner) {
+                if (suggestions) {
                     if (messageList === "all") {
-                        SuggestionRepository.getAllForTruck(foundTruckOwner.truckId).then(setSuggestions)
+                        setSuggestionsList(suggestions)
                     } else {
-                        SuggestionRepository.getAllUnreadForTruck(foundTruckOwner.truckId).then(setSuggestions)
+                        const unread = suggestions.filter(suggestion => suggestion.read === false)
+                        setUnreadSuggestionsNum(unread.length)
+                        setSuggestionsList(unread)
                     }
 
                 } else return false
-            })
-    }, [messageList, readStateChange])
+            // })
+    }, [messageList, readStateChange, suggestions])
 
-    useEffect(() => {
-        UserRepository.getAllTruckOwners()
-            .then((res) => {
-                const foundTruckOwner = res.find(truckOwner => truckOwner.userId === getCurrentUser().id)
-                if (foundTruckOwner) {
-                    SuggestionRepository.getAllUnreadForTruck(foundTruckOwner.id).then(setUnreadSuggestions)
-                } else return false
-            })
-    }, [readStateChange, suggestions])
+    // useEffect(() => {
+    //     UserRepository.getAllTruckOwners()
+    //         .then((res) => {
+    //             const foundTruckOwner = res.find(truckOwner => truckOwner.userId === getCurrentUser().id)
+    //             if (foundTruckOwner) {
+    //                 SuggestionRepository.getAllUnreadForTruck(foundTruckOwner.id).then(setUnreadSuggestions)
+    //             } else return false
+    //         })
+    // }, [readStateChange, suggestions])
 
     const updateMessage = (suggestion) => {
         SuggestionRepository.get(suggestion.id)
@@ -71,14 +73,14 @@ export const Suggestions = ({ updateReadStateChange }) => {
     return (
         <div className="userSuggestions">
             <div className="messageList--options">
-                <Button className="messageList--option-btn" onClick={() => { setMessageList("unread") }}>Unread Suggestions ({unreadSuggestions.length}) {messageList === "unread" ? "-->" : ""} </Button>
+                <Button className="messageList--option-btn" onClick={() => { setMessageList("unread") }}>Unread Suggestions ({unreadSuggestionsNum}) {messageList === "unread" ? "-->" : ""} </Button>
                 <Button className="messageList--option-btn" onClick={() => { setMessageList("all") }}>All Suggestions {messageList === "all" ? "-->" : ""}</Button>
             </div>
             <div className="messagesList">
                 {
-                    suggestions.length > 0
+                    suggestionsList.length > 0
 
-                        ? suggestions.map(suggestion => {
+                        ? suggestionsList.map(suggestion => {
                             return <div key={suggestion.id} className="suggestion">
                                 <div >
                                     <div className="suggestion-truck">{suggestion.truck.name}</div>
@@ -86,7 +88,7 @@ export const Suggestions = ({ updateReadStateChange }) => {
                                     <div className="suggestion-date">When:  {suggestion.date}</div>
                                     <div className="suggestion-message">What:  {suggestion.message}</div>
                                     <div className="suggestion-author">
-                                        <div>~{suggestion.user.name} </div>
+                                        <div>~{suggestion.user_account.user.name} </div>
                                         <div>
                                             {
                                                 suggestion.includeContact === true

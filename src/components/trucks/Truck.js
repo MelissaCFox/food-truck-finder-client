@@ -58,7 +58,7 @@ export const Truck = ({ truckID, setUser, userId, updateReadStateChange }) => {
 
     const [currentUser, setCurrentUser] = useState({})
     useEffect(() => {
-        setCurrentUser(getCurrentUser())
+        getCurrentUser().then(setCurrentUser)
     }, [])
 
     const location = useLocation()
@@ -104,7 +104,8 @@ export const Truck = ({ truckID, setUser, userId, updateReadStateChange }) => {
             neighborhoodId: parseInt(neighborhoodId),
             dayId: dayId
         }
-        const existingTruckLocation = truckLocations.find(location => location.truckId === truckId && location.dayId === dayId)
+
+        const existingTruckLocation = truckLocations.find(location => location.truck.id === truckId && location.day.id === dayId)
 
         if (existingTruckLocation && neighborhoodId === "0") {
             TruckLocationRepository.delete(existingTruckLocation.id).then(() => { TruckLocationRepository.getTruckLocationsByTruck(truckID).then(setTruckLocations) })
@@ -123,16 +124,17 @@ export const Truck = ({ truckID, setUser, userId, updateReadStateChange }) => {
         })
     }
 
-    
+
     const toggleFavorite = (favoriteTruckId) => {
         const newLike = {
-            truckId: favoriteTruckId
+            truckId: parseInt(favoriteTruckId)
         }
         if (truck.favorite) {
-            const existingLike = UserTruckFavoriteRepository.getForUserAndTruck(truckId)
-            UserTruckFavoriteRepository.delete(existingLike.id).then(()=> alertNewInfo()) //find existing favorite then delete and trigger state change
+            //find existing favorite then delete and trigger state change
+            UserTruckFavoriteRepository.getForUserAndTruck(truckId)
+                .then(r => UserTruckFavoriteRepository.delete(r.id).then(() => alertNewInfo()))
         } else {
-            UserTruckFavoriteRepository.add(newLike).then(()=> alertNewInfo()) //then trigger state change so that star images changes in browser
+            UserTruckFavoriteRepository.add(newLike).then(() => alertNewInfo()) //then trigger state change so that star images changes in browser
         }
 
     }
@@ -152,7 +154,7 @@ export const Truck = ({ truckID, setUser, userId, updateReadStateChange }) => {
                     <div className="truck__favorite">
                         <button className="star-icon" onClick={() => { toggleFavorite(truckId) }}>
                             <img alt="star" className="star-icon" src={truck.favorite ? Fav : NoFav} />
-                            </button>
+                        </button>
 
                     </div>
                     <div className="truck__name">
@@ -280,7 +282,7 @@ export const Truck = ({ truckID, setUser, userId, updateReadStateChange }) => {
 
                     <div className="truck__currentLocation">
                         <div className="truck-location-heading">Find Us Today </div><div className="truck-location-card">
-                            <TruckSchedule neighborhoods={neighborhoods} truckPage={truckId} dayId={currentDayId} truckLocations={truckLocations} />
+                            <TruckSchedule neighborhoods={neighborhoods} truckId={truck.id} truckPage={truckId} dayId={currentDayId} truckLocations={truckLocations} createNewLocation={createNewLocation} />
                         </div>
                         {
                             truckId
@@ -345,7 +347,7 @@ export const Truck = ({ truckID, setUser, userId, updateReadStateChange }) => {
                         }
                     </div>
                     {
-                        currentUser.owner
+                        currentUser?.owner
                             ? ""
                             : <div className="review-form"><ReviewForm truckId={truckId} setTruck={setTruck} alertNewRating={alertNewRating} /></div>
                     }

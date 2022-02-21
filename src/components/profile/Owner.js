@@ -21,47 +21,34 @@ export const Owner = ({ userId }) => {
     const [suggestions, setSuggestions] = useState(false)
     const toggleSuggestions = () => setSuggestions(!suggestions)
 
+    const [allSuggestions, setAllSuggestions] = useState([])
     const [newUnreadSuggestions, setUnreadSuggestions] = useState([])
     const [readStateChange, setReadStateChange] = useState(false)
     const updateReadStateChange = () => setReadStateChange(!readStateChange)
 
     useEffect(() => {
-        const recentTrucks = user.truckOwners?.sort((a,b) => {
+        const recentTrucks = user.truckOwners?.sort((a, b) => {
             return b.truckId - a.truckId
         })
         setOwnedTrucks(recentTrucks)
-    },[user])
-
-    useEffect(() => {
-        TruckRepository.getAll()
-            .then((trucks) => {
-                const truckFetchArray = []
-                const allTruckSuggestions = []
-                const ownedTrucks = trucks.filter((truck) => {
-                    const foundOwner = truck.truckOwners.find(owner => owner.userId === userId)
-                    if (foundOwner) {
-                        return truck
-                    } else return false
-                })
-                for (const truckObj of ownedTrucks) {
-
-                    truckFetchArray.push(SuggestionRepository.getAllUnreadForTruck(truckObj.id).then((response) => {
-                        response.forEach(suggestion => {
-                            allTruckSuggestions.push(suggestion)
-                        });
-                    }))
-                }
-                Promise.all(truckFetchArray)
-                    .then(() => {
-                        setUnreadSuggestions(allTruckSuggestions)
-                    })
-            })
-    }, [readStateChange, userId])
-
-    useEffect(() => {
-        TruckRepository.getAll().then(setTrucks)
-    
     }, [user])
+
+
+    useEffect(() => {
+        TruckRepository.getOwnerTrucks()
+        .then(response => {
+            let suggestions = []
+            let unreadSuggestions = 0
+            for (const truck of response) {
+                unreadSuggestions += truck.unread_suggestions
+                for (const suggestion of truck.suggestions) {
+                    suggestions.push(suggestion)
+                }
+            }
+            setAllSuggestions(suggestions)
+            setUnreadSuggestions(unreadSuggestions)
+        })
+    },[])
 
 
     useEffect(() => {
@@ -105,23 +92,23 @@ export const Owner = ({ userId }) => {
                         }}>
                         Suggestions
                         {
-                            newUnreadSuggestions?.length > 0
-                                ? <div>({newUnreadSuggestions.length} New)</div>
+                            newUnreadSuggestions > 0
+                                ? <div>({newUnreadSuggestions} New)</div>
                                 : ""
                         }
                     </Button>
                 </div>
 
                 <div>
-                    <Collapse  isOpen={collapse}>
+                    <Collapse isOpen={collapse}>
                         <div className="owner-favorites">
                             <div className="profile-container"><Favorites userId={userId} /></div>
                         </div>
                     </Collapse>
 
-                    <Collapse  isOpen={suggestions}>
+                    <Collapse isOpen={suggestions}>
                         <ul className="suggestions">
-                            <div className="suggestion--messages"><Suggestions key={readStateChange} updateReadStateChange={updateReadStateChange} /></div>
+                            <div className="suggestion--messages"><Suggestions key={readStateChange} suggestions={allSuggestions} updateReadStateChange={updateReadStateChange} /></div>
                         </ul>
                     </Collapse>
                 </div>
@@ -130,14 +117,12 @@ export const Owner = ({ userId }) => {
             <div className="owner-trucks">
                 <ul className="truck-list">
                     {
-                        ownedTrucks?.map(truckOwner => {
-                            let foundTruck = trucks?.find(truck => truck.id === truckOwner.truckId)
-                            if (foundTruck) {
-                                return <li key={truckOwner.id}>
-                                    <Truck key={foundTruck.id} truckID={foundTruck.id} setTrucks={setTrucks} setUser={setUser} userId={userId} updateReadStateChange={updateReadStateChange} />
+                        user.trucks?.map(truck => {
+                            return <li key={truck.id}>
+                                <Truck key={truck.id} truckID={truck.id} setTrucks={setTrucks} setUser={setUser} userId={userId} updateReadStateChange={updateReadStateChange} />
 
-                                </li>
-                            } else return false
+                            </li>
+
                         })
                     }
                 </ul>

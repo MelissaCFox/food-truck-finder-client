@@ -12,7 +12,7 @@ export const Favorites = ({ thisUser, newInfo }) => {
     },[])
 
     return (
-        <ul className={thisUser.owner ? "owner-favorites list" : "favorites list"}>
+        <ul className={thisUser?.owner ? "owner-favorites list" : "favorites list"}>
 
             {
                 favorites.length > 0

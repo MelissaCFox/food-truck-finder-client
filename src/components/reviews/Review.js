@@ -95,14 +95,17 @@ export const Review = ({ review, user, alertNewInfo, setTruck, alertNewRating, a
                                             <Button onClick={
                                                 () => {
                                                     truckId
-                                                        ? ReviewRepository.deleteAndUpdate(review)
+                                                        ? ReviewRepository.delete(review.id)
                                                             .then(() => {
                                                                 TruckRepository.get(truckId).then(setTruck)
-                                                                    .then(alertNewRating)
-                                                                    .then(editToggle)
-                                                                    .then(reviewToggle)
+                                                                    .then(() => {
+                                                                        alertNewRating()
+                                                                        editToggle()
+                                                                        reviewToggle()
+                                                                    })
+
                                                             })
-                                                        : ReviewRepository.deleteAndUpdate(review)
+                                                        : ReviewRepository.delete(review.id)
                                                             .then(() => {
                                                                 alertNewInfo()
                                                                 reviewToggle()
@@ -134,9 +137,11 @@ export const Review = ({ review, user, alertNewInfo, setTruck, alertNewRating, a
             <Rating precision={0.5} name="size-medium" className="truck-userStar" defaultValue={review.rating} readOnly />
 
             {
-                review.anonymous
-                    ? <div className="review-author">~ Anonymous</div>
-                    : <div className="review-author">~ {review.user_account.user.first_name} {review.user_account?.user.last_name?.charAt(0)}.</div>
+                user
+                    ? ""
+                    : review.anonymous
+                        ? <div className="review-author">~ Anonymous</div>
+                        : <div className="review-author">~ {review.user_account.user.first_name} {review.user_account?.user.last_name?.charAt(0)}.</div>
             }
 
         </div>

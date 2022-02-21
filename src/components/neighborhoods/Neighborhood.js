@@ -58,7 +58,7 @@ export const Neighborhood = () => {
                         {
                             randomTruckLocation.id
                                 ? <div className="card truck today" key={randomTruckLocation.id}>
-                                    <TruckCard className="card-body" truckId={randomTruckLocation.truckId} />
+                                    <TruckCard className="card-body" truckId={randomTruckLocation.truck.id} />
                                 </div>
                                 : <div className="card truck today"><div className="card-body">
                                     No Trucks Today

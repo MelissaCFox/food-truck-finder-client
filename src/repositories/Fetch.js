@@ -27,8 +27,11 @@ export const fetchIt = (url, method = "GET", body = null) => {
     if (body !== null) {
         options.body = body
     }
-
-    return fetch(url, options).then(r => r.json())
+    if (options.method === "DELETE" || options.method === "PUT") {
+        return fetch(url, options)
+    } else {
+        return fetch(url, options).then(r => r.json())
+    }
 }
 
 // export const request = {

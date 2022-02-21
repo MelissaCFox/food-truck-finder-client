@@ -36,69 +36,6 @@ const ReviewRepository = {
     },
 
 
-    async addAndUpdate(reviewObj) {
-        return await fetchIt(`${Settings.remoteURL}/userTruckReviews`, "POST", JSON.stringify(reviewObj))
-            .then((r) => {
-                TruckRepository.get(r.truckId)
-                    .then((bigTruck) => {
-                        let totalRating = 0
-                        let averageRating = 0
-                        if (bigTruck.userTruckReviews.length > 0) {
-                            for (const review of bigTruck.userTruckReviews) {
-                                totalRating += review.rating
-                            }
-                            averageRating = totalRating / bigTruck.userTruckReviews.length
-
-                            const updatedTruck = {
-                                id: bigTruck.id,
-                                name: bigTruck.name,
-                                foodTypeId: bigTruck.foodTypeId,
-                                description: bigTruck.description,
-                                websiteURL: bigTruck.websiteURL,
-                                instagramURL: bigTruck.instagramURL,
-                                profileImgSrc: bigTruck.profileImgSrc,
-                                hours: bigTruck.hours,
-                                dollars: bigTruck.dollars,
-                                userRating: averageRating
-                            }
-                            TruckRepository.update(bigTruck.id, updatedTruck)
-                        }
-                    })
-            })
-    },
-
-    async deleteAndUpdate(review) {
-        return await fetchIt(`${Settings.remoteURL}/userTruckReviews/${review.id}`, "DELETE")
-            .then(() => {
-                TruckRepository.get(review.truckId)
-                    .then((bigTruck) => {
-                        let totalRating = 0
-                        let averageRating = 0
-                        if (bigTruck.userTruckReviews.length > 0) {
-                            for (const review of bigTruck.userTruckReviews) {
-                                totalRating += review.rating
-                            }
-                            averageRating = totalRating / bigTruck.userTruckReviews.length
-                        } else {
-                            averageRating = 0
-                        }
-                        const updatedTruck = {
-                            id: bigTruck.id,
-                            name: bigTruck.name,
-                            foodTypeId: bigTruck.foodTypeId,
-                            description: bigTruck.description,
-                            websiteURL: bigTruck.websiteURL,
-                            instagramURL: bigTruck.instagramURL,
-                            profileImgSrc: bigTruck.profileImgSrc,
-                            hours: bigTruck.hours,
-                            dollars: bigTruck.dollars,
-                            userRating: averageRating
-                        }
-                        TruckRepository.update(bigTruck.id, updatedTruck)
-
-                    })
-            })
-    },
 }
 
 export default ReviewRepository

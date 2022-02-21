@@ -27,6 +27,10 @@ const TruckRepository = {
 
     async update(truckId, newTruckObj) {
         return await fetchIt(`${Settings.remoteURL}/trucks/${truckId}`, "PUT", JSON.stringify(newTruckObj))
+    },
+
+    async getOwnerTrucks() {
+        return await fetchIt(`${Settings.remoteURL}/trucks?owner=true`)
     }
 
 }

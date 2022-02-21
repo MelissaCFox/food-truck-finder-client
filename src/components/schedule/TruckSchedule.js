@@ -37,7 +37,6 @@ export const TruckSchedule = ({ dayId, truckLocations, truckId, truckPage, neigh
                                             name="location"
                                             id="locationId"
                                             onChange={e => {
-                                                
                                                 createNewLocation(truckId, e.target.value, dayId)
                                             }}
                                             className="form-control"
