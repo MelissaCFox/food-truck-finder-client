@@ -72,7 +72,7 @@ export const Review = ({ review, user, alertNewInfo, setTruck, alertNewRating, a
                                     Edit Review
                                 </ModalHeader>
                                 <ModalBody>
-                                    <Input type="textarea" className="form-control" defaultValue={review.review} onChange={(e) => setNewDescription(e.target.value)}></Input
+                                    <Input type="textarea" className="form-control review-area" defaultValue={review.review} onChange={(e) => setNewDescription(e.target.value)}></Input
                                     >
                                 </ModalBody>
                                 <ModalFooter>

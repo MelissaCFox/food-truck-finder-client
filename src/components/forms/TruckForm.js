@@ -12,9 +12,10 @@ import InstagramIcon from "../images/InstagramIcon.png"
 import './Form.css';
 
 
-
 export const TruckForm = ({ userId, toggle, setTrucks, setUser, existingTruck, editToggle, alertNewInfo }) => {
     const [foodTypes, setFoodTypes] = useState([])
+    const [truckFoodTypes, setTruckFoodTypes] = useState([])
+
     const [truck, setTruck] = useState({
         name: existingTruck ? existingTruck.name : "",
         description: existingTruck ? existingTruck.description : "",
@@ -30,11 +31,15 @@ export const TruckForm = ({ userId, toggle, setTrucks, setUser, existingTruck, e
     })
     const [changedFoodTypes, setChangedFoodTypes] = useState(false)
     const alertChangedFoodTypes = () => setChangedFoodTypes(true)
-    const [existingTruckFoodTypes, setExistingTruckFoodTypes] = useState([])
+    const [existingFoodTypes, setExistingFoodTypes] = useState([])
+
+    useEffect(() => {
+        TruckFoodTypeRepository.getAll().then(setTruckFoodTypes)
+    }, [])
 
     useEffect(() => {
         if (existingTruck) {
-            setExistingTruckFoodTypes(existingTruck.food_types)
+            setExistingFoodTypes(existingTruck.food_types)
             const mappedTypes = existingTruck.food_types.map(type => {
                 return { label: type.type, value: type.id }
             })
@@ -66,15 +71,18 @@ export const TruckForm = ({ userId, toggle, setTrucks, setUser, existingTruck, e
                 copy.newPhoto = true
             }
             setTruck(copy)
-
-        })
+        });
     }
 
     const updateTruck = (truck) => {
         TruckRepository.update(existingTruck.id, truck)
             .then(() => {
                 if (changedFoodTypes) {
-                    existingTruckFoodTypes.forEach(truckType => TruckFoodTypeRepository.delete(truckType.id))
+                    existingFoodTypes.forEach(foodType => {
+                        const existingTFT = truckFoodTypes.find(ftf => ftf.truck === existingTruck.id && ftf.type === foodType.id)
+                        TruckFoodTypeRepository.delete(existingTFT.id)
+
+                    })
                     const newFoodTypesArray = []
                     const truckTypesPostArray = []
                     for (const selection of userSelectedFoodtypes) {
@@ -189,12 +197,12 @@ export const TruckForm = ({ userId, toggle, setTrucks, setUser, existingTruck, e
                 </InputGroup>
                 <InputGroup className="form-group">
                     <InputGroupText className="input-label" >Description</InputGroupText>
-                    <input
-                        type="text"
+                    <Input
+                        type="textarea"
                         required
                         autoFocus
                         defaultValue={existingTruck ? `${existingTruck?.description}` : ""}
-                        className="form-control"
+                        className="form-control description-area"
                         id="description"
                         placeholder="Description"
                         onChange={e => {
@@ -209,20 +217,6 @@ export const TruckForm = ({ userId, toggle, setTrucks, setUser, existingTruck, e
                     <InputGroupText className="input-label">Profile Image</InputGroupText>
                     <Input type="file" id="truck_image" onChange={createTruckImageString} />
                     <Input type="hidden" name="truck_id" value={truck.id} />
-                    {/* <input
-                        type="text"
-                        required
-                        autoFocus
-                        defaultValue={existingTruck ? `${existingTruck?.profileImgSrc}` : ""}
-                        className="form-control"
-                        id="profileImg"
-                        placeholder="URL"
-                        onChange={e => {
-                            const copy = { ...truck }
-                            copy.profileImgSrc = e.target.value
-                            setTruck(copy)
-                        }}
-                    /> */}
                 </InputGroup>
                 <InputGroup className="form-group">
                     <InputGroupText className="input-label">Typical Hours</InputGroupText>

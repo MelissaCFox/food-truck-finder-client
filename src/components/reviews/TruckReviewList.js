@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { useParams } from "react-router-dom"
 import ReviewRepository from "../../repositories/ReviewRepository"
+import TruckRepository from "../../repositories/TruckRepository"
 import { Review } from "./Review"
 import './Reviews.css';
 
@@ -9,23 +10,23 @@ import './Reviews.css';
 
 export const TruckReviewList = () => {
     const { truckId } = useParams()
-    const [reviews, setReviews] = useState([])
+    const [truck, setTruck] = useState({})
     const [newInfo, setNewInfo] = useState(false)
     const editedReview = () => setNewInfo(!newInfo)
 
 
     useEffect(() => {
-        ReviewRepository.getAllForTruck(truckId).then(setReviews)
+        TruckRepository.get(truckId).then(setTruck)
     }, [newInfo, truckId])
 
     return (
         <div className="truck-reviews">
-            <h2 className="heading "> <Link className="all-reviews" to={`/trucks/${reviews[0]?.truck.id}`}>{reviews[0]?.truck.name}</Link> -- Reviews</h2>
+            <h2 className="heading "> <Link className="all-reviews" to={`/trucks/${truck.id}`}>{truck.name}</Link> -- Reviews</h2>
             <div className="truck-reviews-all">
 
                 {
-                    reviews.length > 0
-                        ? reviews.map(review => <Review key={review.id} review={review} allReviewsList={true} editedReview={editedReview} />)
+                    truck.reviews?.length > 0
+                        ? truck.reviews?.map(review => <Review key={review.id} review={review} allReviewsList={true} editedReview={editedReview} />)
                         : <div>No Reviews Yet</div>
                 }
 

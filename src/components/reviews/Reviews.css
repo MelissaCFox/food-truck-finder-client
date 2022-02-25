@@ -33,3 +33,7 @@
     .scrollbar--review::-webkit-scrollbar-thumb {
     border-radius: 10px;
     background-image: linear-gradient(to right, #ECDBBA 0%, #887d68 100%); }
+
+.review-area{
+    height: 10rem;
+}
