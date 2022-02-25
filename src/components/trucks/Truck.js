@@ -26,8 +26,6 @@ import { useLocation } from "react-router-dom"
 import { TruckForm } from "../forms/TruckForm"
 import Settings from "../../repositories/Settings";
 
-
-
 export const Truck = ({ truckID, setUser, userId, updateReadStateChange }) => {
     const currentDayId = new Date().getDay() + 1
     const [truck, setTruck] = useState({})
@@ -151,12 +149,17 @@ export const Truck = ({ truckID, setUser, userId, updateReadStateChange }) => {
         <div className="truck__page-card">
             <div className="truck__info">
                 <div className="truck__heading">
-                    <div className="truck__favorite">
-                        <button className="star-icon" onClick={() => { toggleFavorite(truckId) }}>
-                            <img alt="star" className="star-icon" src={truck.favorite ? Fav : NoFav} />
-                        </button>
+                    {
+                        truckID
+                            ? ""
+                            : <div className="truck__favorite">
+                                <button className="star-icon" onClick={() => { toggleFavorite(truckId) }}>
+                                    <img alt="star" className="star-icon" src={truck.favorite ? Fav : NoFav} />
+                                </button>
 
-                    </div>
+                            </div>
+                    }
+
                     <div className="truck__name">
                         {truck.name}
                     </div>
@@ -193,11 +196,11 @@ export const Truck = ({ truckID, setUser, userId, updateReadStateChange }) => {
 
                                     <Modal isOpen={confirm} centered fullscreen="sm" size="sm" toggle={toggle} >
                                         <ModalHeader toggle={toggle3}>
-                                            Are You Sure You Want to Retire {basicTruck.name}?
+                                            Are You Sure You Want to Retire {truck.name}?
                                         </ModalHeader>
                                         <ModalBody>
                                             <Button color="danger" onClick={() => {
-                                                TruckRepository.delete(basicTruck.id).then(() => {
+                                                TruckRepository.delete(truck.id).then(() => {
                                                     updateReadStateChange()
                                                     UserRepository.get(userId).then(setUser)
                                                         .then(() => {

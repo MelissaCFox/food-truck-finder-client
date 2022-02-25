@@ -25,25 +25,23 @@ export const TruckForm = ({ userId, toggle, setTrucks, setUser, existingTruck, e
         profileImgSrc: existingTruck ? existingTruck.profile_img_src : "",
         hours: existingTruck ? existingTruck.hours : "",
         dollars: existingTruck ? existingTruck.dollars : 1,
-        userRating: existingTruck ? existingTruck.user_rating : 0
+        userRating: existingTruck ? existingTruck.user_rating : 0,
+        newPhoto: false
     })
     const [changedFoodTypes, setChangedFoodTypes] = useState(false)
     const alertChangedFoodTypes = () => setChangedFoodTypes(true)
     const [existingTruckFoodTypes, setExistingTruckFoodTypes] = useState([])
 
     useEffect(() => {
-        if (existingTruck && foodTypes) {
-            FoodTypeRepository.getForTruck(existingTruck.id)
-                .then((res) => {
-                    setExistingTruckFoodTypes(res)
-                    const mappedTypes = res.map(type => {
-                        const foundType = foodTypes.find(foodType => foodType.id === type.foodTypeId)
-                        return { label: foundType?.type, value: type.foodTypeId }
-                    })
-                    setUserSelectedFoodTypes(mappedTypes)
-                })
+        if (existingTruck) {
+            setExistingTruckFoodTypes(existingTruck.food_types)
+            const mappedTypes = existingTruck.food_types.map(type => {
+                return { label: type.type, value: type.id }
+            })
+            setUserSelectedFoodTypes(mappedTypes)
+
         } else return false
-    }, [existingTruck, foodTypes])
+    }, [existingTruck])
 
     const [formCheck, setFormCheck] = useState(false)
     const toggleFormCheck = () => setFormCheck(!formCheck)
@@ -62,10 +60,13 @@ export const TruckForm = ({ userId, toggle, setTrucks, setUser, existingTruck, e
 
     const createTruckImageString = (event) => {
         getBase64(event.target.files[0], (base64ImageString) => {
-            // console.log("Base64 of file is", base64ImageString);
             const copy = { ...truck }
             copy.profileImgSrc = base64ImageString
+            if (existingTruck) {
+                copy.newPhoto = true
+            }
             setTruck(copy)
+
         })
     }
 
