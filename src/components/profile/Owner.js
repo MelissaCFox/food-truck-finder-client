@@ -25,6 +25,7 @@ export const Owner = ({ userId }) => {
     const [newUnreadSuggestions, setUnreadSuggestions] = useState([])
     const [readStateChange, setReadStateChange] = useState(false)
     const updateReadStateChange = () => setReadStateChange(!readStateChange)
+    const [allMessages, setAllMessages] = useState(false)
 
     useEffect(() => {
         const recentTrucks = user.truckOwners?.sort((a, b) => {
@@ -48,7 +49,7 @@ export const Owner = ({ userId }) => {
             setAllSuggestions(suggestions)
             setUnreadSuggestions(unreadSuggestions)
         })
-    },[])
+    },[readStateChange])
 
 
     useEffect(() => {
@@ -108,7 +109,13 @@ export const Owner = ({ userId }) => {
 
                     <Collapse isOpen={suggestions}>
                         <ul className="suggestions">
-                            <div className="suggestion--messages"><Suggestions key={readStateChange} suggestions={allSuggestions} updateReadStateChange={updateReadStateChange} /></div>
+                            <div className="suggestion--messages"><Suggestions 
+                            key={readStateChange} 
+                            suggestions={allSuggestions} 
+                            updateReadStateChange={updateReadStateChange}
+                            allMessages={allMessages}
+                            setAllMessages={setAllMessages}
+                             /></div>
                         </ul>
                     </Collapse>
                 </div>
@@ -119,7 +126,7 @@ export const Owner = ({ userId }) => {
                     {
                         user.trucks?.map(truck => {
                             return <li key={truck.id}>
-                                <Truck key={truck.id} truckID={truck.id} setTrucks={setTrucks} setUser={setUser} userId={userId} updateReadStateChange={updateReadStateChange} />
+                                <Truck key={truck.id} truckID={truck.truck.id} setTrucks={setTrucks} setUser={setUser} userId={userId} updateReadStateChange={updateReadStateChange} />
 
                             </li>
 

@@ -1,80 +1,52 @@
 import { useState } from "react"
 import { useEffect } from "react/cjs/react.development"
 import { Button } from "reactstrap"
-import useSimpleAuth from "../../hooks/ui/useSimpleAuth"
 import SuggestionRepository from "../../repositories/SuggestionsRepository"
-import UserRepository from "../../repositories/UserRepository"
 
 
-export const Suggestions = ({ updateReadStateChange, suggestions }) => {
-    const { getCurrentUser } = useSimpleAuth()
+export const Suggestions = ({ updateReadStateChange, suggestions, allMessages, setAllMessages }) => {
     const [unreadSuggestionsNum, setUnreadSuggestionsNum] = useState(0)
-
     const [suggestionsList, setSuggestionsList] = useState([])
 
-    const [messageList, setMessageList] = useState("unread")
-
-    const [readStateChange, setReadStateChange] = useState(false)
-    const triggerReadStateChange = () => setReadStateChange(!readStateChange)
-
-
     useEffect(() => {
-        // UserRepository.getAllTruckOwners()
-        //     .then((res) => {
-        //         const foundTruckOwner = res.find(truckOwner => truckOwner.userId === getCurrentUser().id)
 
-                if (suggestions) {
-                    if (messageList === "all") {
-                        setSuggestionsList(suggestions)
-                    } else {
-                        const unread = suggestions.filter(suggestion => suggestion.read === false)
-                        setUnreadSuggestionsNum(unread.length)
-                        setSuggestionsList(unread)
-                    }
+        if (suggestions) {
+            suggestions.sort((a, b) => {
+                return new Date(b.date) - new Date(a.date)
+            })
+            if (allMessages) {
+                setSuggestionsList(suggestions)
+                const unread = suggestions.filter(suggestion => suggestion.read === false)
+                setUnreadSuggestionsNum(unread.length)
+            } else {
+                const unread = suggestions.filter(suggestion => suggestion.read === false)
+                setUnreadSuggestionsNum(unread.length)
+                setSuggestionsList(unread)
+            }
+        } else return false
 
-                } else return false
-            // })
-    }, [messageList, readStateChange, suggestions])
+    }, [allMessages, suggestions])
 
-    // useEffect(() => {
-    //     UserRepository.getAllTruckOwners()
-    //         .then((res) => {
-    //             const foundTruckOwner = res.find(truckOwner => truckOwner.userId === getCurrentUser().id)
-    //             if (foundTruckOwner) {
-    //                 SuggestionRepository.getAllUnreadForTruck(foundTruckOwner.id).then(setUnreadSuggestions)
-    //             } else return false
-    //         })
-    // }, [readStateChange, suggestions])
 
     const updateMessage = (suggestion) => {
         SuggestionRepository.get(suggestion.id)
             .then((res) => {
-                if (res.read === false) {
-                    let updatedSuggestion = { ...res }
-                    updatedSuggestion.read = true
-                    SuggestionRepository.update(suggestion.id, updatedSuggestion)
-                        .then(() => {
-                            updateReadStateChange()
-                            triggerReadStateChange()
-                        })
 
-                } else {
-                    let updatedSuggestion = { ...res }
-                    updatedSuggestion.read = false
-                    SuggestionRepository.update(suggestion.id, updatedSuggestion)
-                        .then(() => {
-                            updateReadStateChange()
-                            triggerReadStateChange()
-                        })
-                }
+                let updatedSuggestion = { ...res }
+                updatedSuggestion.read = !suggestion.read
+                SuggestionRepository.update(suggestion.id, updatedSuggestion)
+                    .then(() => {
+                        updateReadStateChange()
+
+                    })
             })
     }
 
     return (
         <div className="userSuggestions">
             <div className="messageList--options">
-                <Button className="messageList--option-btn" onClick={() => { setMessageList("unread") }}>Unread Suggestions ({unreadSuggestionsNum}) {messageList === "unread" ? "-->" : ""} </Button>
-                <Button className="messageList--option-btn" onClick={() => { setMessageList("all") }}>All Suggestions {messageList === "all" ? "-->" : ""}</Button>
+                <Button className="messageList--option-btn" onClick={() => { setAllMessages(false) }}>Unread Suggestions ({unreadSuggestionsNum}) {allMessages ? "" : "-->"} </Button>
+                <Button className="messageList--option-btn" onClick={() => { setAllMessages(true) }}>All Suggestions ({suggestions.length}) {allMessages ? "-->" : ""}</Button>
             </div>
             <div className="messagesList">
                 {
@@ -88,18 +60,18 @@ export const Suggestions = ({ updateReadStateChange, suggestions }) => {
                                     <div className="suggestion-date">When:  {suggestion.date}</div>
                                     <div className="suggestion-message">What:  {suggestion.message}</div>
                                     <div className="suggestion-author">
-                                        <div>~{suggestion.user_account.user.name} </div>
+                                        <div>~{suggestion.user_account.user.first_name} </div>
                                         <div>
                                             {
-                                                suggestion.includeContact === true
-                                                    ? <div><a className="contactEmail" href={`mailto:${suggestion.user.email}`}>Contact User</a></div>
+                                                suggestion.include_contact === true
+                                                    ? <div><a className="contactEmail" href={`mailto:${suggestion.user_account.email}`}>Contact User</a></div>
                                                     : ""
                                             }
                                         </div>
                                     </div>
                                 </div>
-                                <Button className="suggestion-btn" onClick={() => updateMessage(suggestion)}>Mark Read/Unread</Button>
-                                <Button className="suggestion-btn" onClick={() => SuggestionRepository.delete(suggestion.id).then(triggerReadStateChange)}>Delete</Button>
+                                <Button className="suggestion-btn" onClick={() => updateMessage(suggestion)}>Mark as {suggestion.read ? "Unread" : "Read"}</Button>
+                                <Button className="suggestion-btn" onClick={() => SuggestionRepository.delete(suggestion.id).then(updateReadStateChange)}>Delete</Button>
                             </div>
                         })
                         : <div className="suggestion"><div className="noMessages">No suggestions</div></div>

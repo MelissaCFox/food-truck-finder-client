@@ -1,5 +1,5 @@
 
 export const Footer = () => {
 
-    return <div className="fixed-bottom"><strong>Food Truck Finder</strong> is Brought to You By <strong><a className="footer-link" target="blank" href="https://github.com/MelissaCFox"> MelissaCFox </a></strong>, Developer Extraordinaire</div>
+    return <div className="fixed-bottom">*** This application is a personal project and does not reflect the accurate opinions/information of real people/trucks ***</div>
 }

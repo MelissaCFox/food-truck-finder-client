@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
 import { useParams } from "react-router-dom"
 import ReviewRepository from "../../repositories/ReviewRepository"
-import TruckRepository from "../../repositories/TruckRepository"
 import { Review } from "./Review"
 import './Reviews.css';
 
@@ -20,7 +20,7 @@ export const TruckReviewList = () => {
 
     return (
         <div className="truck-reviews">
-            <h2 className="heading ">{reviews[0]?.truck.name} -- Reviews</h2>
+            <h2 className="heading "> <Link className="all-reviews" to={`/trucks/${reviews[0]?.truck.id}`}>{reviews[0]?.truck.name}</Link> -- Reviews</h2>
             <div className="truck-reviews-all">
 
                 {

@@ -8,6 +8,8 @@ export const Register = () => {
         firstName: "",
         lastName: "",
         email: "",
+        username: "",
+        password: "",
         owner: false
     })
     const { register } = useSimpleAuth()
@@ -20,7 +22,9 @@ export const Register = () => {
             firstName: credentials.firstName,
             lastName: credentials.lastName,
             email: credentials.email,
-            owner: credentials.owner
+            username: credentials.username,
+            password: credentials.password,
+            owner: credentials.owner,
         }
 
         register(newUser).then(() => {
@@ -63,6 +67,22 @@ export const Register = () => {
                         required />
                 </fieldset>
                 <fieldset>
+                    <label htmlFor="username"> Username </label>
+                    <input type="text" onChange={handleUserInput}
+                        id="username"
+                        className="form-control"
+                        placeholder="Username"
+                        required />
+                </fieldset>
+                <fieldset>
+                    <label htmlFor="password"> Password </label>
+                    <input type="text" onChange={handleUserInput}
+                        id="password"
+                        className="form-control"
+                        placeholder="Password"
+                        required />
+                </fieldset>
+                <fieldset>
                     <input
                         onChange={
                             (event) => {
@@ -83,10 +103,10 @@ export const Register = () => {
 
                 <fieldset>
                     <button type="submit">
-                        Sign in
+                        Register
                     </button>
 
-                    <button className="cancel-btn" type="cancel" onClick={()=> {history.push("/login")}}>
+                    <button className="cancel-btn" type="cancel" onClick={()=> {handleRegister()}}>
                         Cancel
                     </button>
                 </fieldset>

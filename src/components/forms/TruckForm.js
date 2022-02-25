@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { Button, FormGroup, InputGroup, InputGroupText, Modal, ModalBody, ModalFooter } from "reactstrap"
+import { Button, FormGroup, Input, InputGroup, InputGroupText, Modal, ModalBody, ModalFooter } from "reactstrap"
 import CreatableSelect from "react-select/creatable";
 import FoodTypeRepository from "../../repositories/FoodTypeRepository"
 import TruckRepository from "../../repositories/TruckRepository"
@@ -18,14 +18,14 @@ export const TruckForm = ({ userId, toggle, setTrucks, setUser, existingTruck, e
     const [truck, setTruck] = useState({
         name: existingTruck ? existingTruck.name : "",
         description: existingTruck ? existingTruck.description : "",
-        websiteURL: existingTruck ? existingTruck.websiteURL : "",
-        instagramURL: existingTruck ? existingTruck.instagramURL : "",
-        facebookURL: existingTruck ? existingTruck.facebookURL : "",
-        twitterURL: existingTruck ? existingTruck.twitterURL : "",
-        profileImgSrc: existingTruck ? existingTruck.profileImgSrc : "",
+        websiteURL: existingTruck ? existingTruck.website_url : "",
+        instagramURL: existingTruck ? existingTruck.website_url : "",
+        facebookURL: existingTruck ? existingTruck.website_url : "",
+        twitterURL: existingTruck ? existingTruck.website_url : "",
+        profileImgSrc: existingTruck ? existingTruck.profile_img_src : "",
         hours: existingTruck ? existingTruck.hours : "",
         dollars: existingTruck ? existingTruck.dollars : 1,
-        userRating: existingTruck ? existingTruck.userRating : 0
+        userRating: existingTruck ? existingTruck.user_rating : 0
     })
     const [changedFoodTypes, setChangedFoodTypes] = useState(false)
     const alertChangedFoodTypes = () => setChangedFoodTypes(true)
@@ -53,6 +53,21 @@ export const TruckForm = ({ userId, toggle, setTrucks, setUser, existingTruck, e
     useEffect(() => {
         FoodTypeRepository.getAll().then(setFoodTypes)
     }, [])
+
+    const getBase64 = (file, callback) => {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => callback(reader.result));
+        reader.readAsDataURL(file);
+    }
+
+    const createTruckImageString = (event) => {
+        getBase64(event.target.files[0], (base64ImageString) => {
+            // console.log("Base64 of file is", base64ImageString);
+            const copy = { ...truck }
+            copy.profileImgSrc = base64ImageString
+            setTruck(copy)
+        })
+    }
 
     const updateTruck = (truck) => {
         TruckRepository.update(existingTruck.id, truck)
@@ -191,7 +206,9 @@ export const TruckForm = ({ userId, toggle, setTrucks, setUser, existingTruck, e
 
                 <InputGroup className="form-group">
                     <InputGroupText className="input-label">Profile Image</InputGroupText>
-                    <input
+                    <Input type="file" id="truck_image" onChange={createTruckImageString} />
+                    <Input type="hidden" name="truck_id" value={truck.id} />
+                    {/* <input
                         type="text"
                         required
                         autoFocus
@@ -204,7 +221,7 @@ export const TruckForm = ({ userId, toggle, setTrucks, setUser, existingTruck, e
                             copy.profileImgSrc = e.target.value
                             setTruck(copy)
                         }}
-                    />
+                    /> */}
                 </InputGroup>
                 <InputGroup className="form-group">
                     <InputGroupText className="input-label">Typical Hours</InputGroupText>
