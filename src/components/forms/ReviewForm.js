@@ -1,7 +1,6 @@
 import Rating from '@mui/material/Rating';
 import { useState } from "react"
 import { Input, Label } from "reactstrap"
-import useSimpleAuth from "../../hooks/ui/useSimpleAuth"
 import ReviewRepository from "../../repositories/ReviewRepository"
 import TruckRepository from "../../repositories/TruckRepository"
 import '../trucks/Truck.css';

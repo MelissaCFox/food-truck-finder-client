@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react"
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min"
-import useSimpleAuth from "../../hooks/ui/useSimpleAuth"
 import TruckRepository from "../../repositories/TruckRepository"
 import Settings from "../../repositories/Settings"
-import UserTruckFavoriteRepository from "../../repositories/UserTruckFavoriteRepository"
 import Rating from '@mui/material/Rating';
 import '../trucks/TruckList.css';
 
@@ -11,16 +9,7 @@ import '../trucks/TruckList.css';
 export const TruckCard = ({ thisTruck, truckId, newInfo, favorite }) => {
     const history = useHistory()
     const [truck, setTruck] = useState({})
-    const [favorites, setFavorites] = useState([])
-    const { getCurrentUser } = useSimpleAuth()
-
     const [truckDollarsString, setTruckDollarsString] = useState("")
-    const [roundedUserRating, setRoundedUserRating] = useState(0)
-    useEffect(() => {
-        const number = truck.user_rating
-        const rounded = Math.round(number * 2) / 2
-        setRoundedUserRating(rounded)
-    }, [truck, thisTruck, truckId, newInfo])
 
     useEffect(() => {
         if (thisTruck) {
@@ -29,12 +18,6 @@ export const TruckCard = ({ thisTruck, truckId, newInfo, favorite }) => {
             TruckRepository.get(truckId).then(setTruck)
         } else return false
     }, [thisTruck, truckId, newInfo])
-
-    // useEffect(() => {
-    //     UserTruckFavoriteRepository.getAll().then(setFavorites)
-    // }, [thisTruck])
-
-    // const favorite = favorites.find(fav => fav.userId === getCurrentUser().id && fav.truckId === truck?.id)
 
     useEffect(() => {
         let truckPrice = "$"

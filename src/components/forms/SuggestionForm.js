@@ -2,12 +2,10 @@ import { useState } from "react"
 import { Button, Form, FormGroup, Input, InputGroup, InputGroupText, Label, Modal, ModalBody, ModalFooter } from "reactstrap"
 import SuggestionRepository from "../../repositories/SuggestionsRepository"
 import NeighborhoodRepository from "../../repositories/NeighborhoodRepository"
-import useSimpleAuth from "../../hooks/ui/useSimpleAuth"
 import { useEffect } from "react/cjs/react.development"
 
 
 export const SuggestionForm = ({ truckId, suggestionToggle }) => {
-    const { getCurrentUser } = useSimpleAuth()
     const [neighborhoods, setNeighborhoods] = useState([])
     const [formCheck, setFormCheck] = useState(false)
     const toggleFormCheck = () => setFormCheck(!formCheck)

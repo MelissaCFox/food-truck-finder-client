@@ -4,14 +4,11 @@ import { useParams } from "react-router-dom/cjs/react-router-dom.min"
 import { useEffect } from "react/cjs/react.development"
 import { Button, Input, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap"
 import Rating from '@mui/material/Rating';
-import useSimpleAuth from "../../hooks/ui/useSimpleAuth"
 import ReviewRepository from "../../repositories/ReviewRepository"
 import TruckRepository from "../../repositories/TruckRepository"
-import UserRepository from "../../repositories/UserRepository"
 
 
 export const Review = ({ review, user, alertNewInfo, setTruck, alertNewRating, allReviewsList, editedReview }) => {
-    const { getCurrentUser } = useSimpleAuth()
     const history = useHistory()
     const { truckId } = useParams()
 
@@ -22,10 +19,8 @@ export const Review = ({ review, user, alertNewInfo, setTruck, alertNewRating, a
 
     const [newDescription, setNewDescription] = useState("")
     const [selectedReview, setSelectedReview] = useState({})
-    const [reviewer, setReviewer] = useState({})
 
     useEffect(() => {
-        // ReviewRepository.getBasic(review.id).then(setSelectedReview)
         setSelectedReview(review)
     }, [review])
 

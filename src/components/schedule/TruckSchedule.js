@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { useEffect } from "react/cjs/react.development"
 import TruckLocationRepository from "../../repositories/TruckLocationRepository"
-import NeighborhoodRepository from "../../repositories/NeighborhoodRepository"
 import { NeighborhoodCard } from "../neighborhoods/NeighborhoodCard"
 import '../trucks/TruckList.css';
 

@@ -1,4 +1,3 @@
-import { useHistory } from "react-router-dom"
 import Settings from "../../repositories/Settings"
 import UserRepository from "../../repositories/UserRepository"
 
@@ -25,25 +24,6 @@ const useSimpleAuth = () => {
         })
     }
 
-    // const login = (email) => {
-    //     return fetch(`${Settings.remoteURL}/users?email=${email}`, {
-    //         method: "GET",
-    //         headers: {
-    //             "Content-Type": "application/json"
-    //         }
-    //     })
-    //     .then(_ => _.json())
-    //     .then(matchingUsers => {
-    //         if (matchingUsers.length > 0) {
-    //             const baseUserObject = JSON.stringify(matchingUsers[0])
-    //             let encoded = Buffer.from(baseUserObject).toString("base64")
-    //             localStorage.setItem("truck__token", encoded)
-    //             return true
-    //         }
-    //         return false
-    //     })
-    // }
-
     const login = (user) => {
         return fetch(`${Settings.remoteURL}/login`, {
             method: "POST",
@@ -69,10 +49,6 @@ const useSimpleAuth = () => {
 
     const getCurrentUser = () => {
         const userId = localStorage.getItem("userId")
-        // const unencoded = Buffer.from(encoded, "base64").toString("utf8")
-        // const parsed = JSON.parse(unencoded)
-        // const bare = Object.assign(Object.create(null), parsed)
-        // return bare
         return UserRepository.get(userId)
         .then(res => {
             const user = {

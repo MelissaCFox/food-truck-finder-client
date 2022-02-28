@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react"
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min"
-import useSimpleAuth from "../../hooks/ui/useSimpleAuth"
-import TruckFoodTypeRepository from "../../repositories/TruckFoodTypeRepository"
 import TruckLocationRepository from "../../repositories/TruckLocationRepository"
-import TruckRepository from "../../repositories/TruckRepository"
-import userTruckFavorites from "../../repositories/UserTruckFavoriteRepository"
 import { TruckCard } from "./TruckCard"
 import './TruckList.css';
 

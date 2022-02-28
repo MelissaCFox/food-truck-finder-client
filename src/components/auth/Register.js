@@ -76,7 +76,7 @@ export const Register = () => {
                 </fieldset>
                 <fieldset>
                     <label htmlFor="password"> Password </label>
-                    <input type="text" onChange={handleUserInput}
+                    <input type="password" onChange={handleUserInput}
                         id="password"
                         className="form-control"
                         placeholder="Password"

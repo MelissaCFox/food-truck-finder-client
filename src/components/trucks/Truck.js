@@ -13,9 +13,7 @@ import { Button, Modal, ModalBody, ModalHeader } from "reactstrap"
 import Fav from './images/Fav.png';
 import NoFav from './images/NoFav.png';
 import './Truck.css';
-import { NeighborhoodCard } from "../neighborhoods/NeighborhoodCard"
 import UserRepository from "../../repositories/UserRepository"
-import FoodTypeRepository from "../../repositories/FoodTypeRepository"
 import { SuggestionForm } from "../forms/SuggestionForm"
 import FacebookIcon from "./images/FacebookIcon.png"
 import TwitterIcon from "./images/TwitterIcon.png"
@@ -33,11 +31,7 @@ export const Truck = ({ truckID, setUser, userId, updateReadStateChange }) => {
     const [neighborhoods, setNeighborhoods] = useState([])
     const [truckLocations, setTruckLocations] = useState([])
     const { getCurrentUser } = useSimpleAuth()
-    const [favorites, setFavorites] = useState([])
-    const [existingLike, setExistingLike] = useState(false)
     const [days, setDays] = useState([])
-    const [basicTruck, setBasicTruck] = useState({})
-    const [roundedUserRating, setRoundedUserRating] = useState(0)
     const [newInfo, setNewInfo] = useState(false)
     const alertNewInfo = () => setNewInfo(!newInfo)
     const [reviews, setReviews] = useState([])
@@ -94,7 +88,7 @@ export const Truck = ({ truckID, setUser, userId, updateReadStateChange }) => {
         } else {
             TruckRepository.get(truckID).then(setTruck)
         }
-    }, [truckId, truckID, roundedUserRating, newRating, newInfo])
+    }, [truckId, truckID, newRating, newInfo])
 
     const createNewLocation = (truckId, neighborhoodId, dayId) => {
         const newTruckLocation = {
@@ -110,7 +104,7 @@ export const Truck = ({ truckID, setUser, userId, updateReadStateChange }) => {
 
         } else if (existingTruckLocation && neighborhoodId) {
             TruckLocationRepository.update(existingTruckLocation.id, newTruckLocation)
-        } else if (neighborhoodId) {
+        } else if (neighborhoodId !== "0") {
             TruckLocationRepository.add(newTruckLocation).then(() => { TruckLocationRepository.getTruckLocationsByTruck(truckID).then(setTruckLocations) })
         }
         TruckRepository.get(truckID).then(() => {
@@ -180,7 +174,7 @@ export const Truck = ({ truckID, setUser, userId, updateReadStateChange }) => {
                                             Edit Details for {<em>{truck.name}</em>}
                                         </ModalHeader>
 
-                                        <TruckForm existingTruck={truck} register={false} toggle3={toggle3} editToggle={editToggle} basicTruck={basicTruck} alertNewInfo={alertNewInfo} />
+                                        <TruckForm existingTruck={truck} register={false} toggle3={toggle3} editToggle={editToggle} alertNewInfo={alertNewInfo} />
 
                                         <Button type="retire"
                                             color="danger"

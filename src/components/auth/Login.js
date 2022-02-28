@@ -20,21 +20,12 @@ const Login = () => {
         e.preventDefault()
 
         console.log("*** Initiate authentication ***")
-        // login(credentials.password, credentials.username, storage)
-        // .then(success => {
-        //     if (success) {
-        //         console.log("*** Rerouting to root URL ***")
-        //         history.push("/")
-        //     } else {
-        //         window.alert("Please log in with existing credentials or register as a new user.")
-        //     }
-        // })
+
         login(credentials)
             .then(res => {
                 if ("valid" in res && res.valid && "token" in res) {
                     localStorage.setItem("ftf__token", res.token)
                     localStorage.setItem("userId", res.user_id)
-                    // localStorage.setItem("userId", res.userId)
                     console.log("*** Authenticated! ***")
                     history.push("/")
                 }

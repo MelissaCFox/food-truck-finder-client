@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react"
-import UserRepository from "../../repositories/UserRepository"
 import userTruckFavorites from "../../repositories/UserTruckFavoriteRepository"
 import { TruckCard } from "../trucks/TruckCard"
 
